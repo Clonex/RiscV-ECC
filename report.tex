@@ -1,0 +1,143 @@
+\documentclass[12pt]{article}
+\usepackage[a4paper,top=2cm,bottom=2cm,left=2cm,right=2cm]{geometry}
+\usepackage{tocloft}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{amsmath}
+\usepackage{xcolor}
+\usepackage{scrextend}
+\usepackage{hyperref}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\lstset{style=mystyle}
+ 
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}} % for dots in table of contents for sections
+
+\newcommand{\code}{\texttt} 
+
+\begin{document}
+\setlength{\baselineskip}{1.5\baselineskip} % This sets the line spacing to something that looks like 1.5 in Word
+
+\begin{titlepage} % Suppresses displaying the page number on the title page and the subsequent page counts as page 1
+	\newcommand{\HRule}{\rule{\linewidth}{0.5mm}} % Defines a new command for horizontal lines, change thickness here
+	
+	\center % Centre everything on the page
+	
+	%------------------------------------------------
+	%	Headings
+	%------------------------------------------------
+	
+	\textsc{\LARGE University of Southern Denmark}\\[1.5cm] % Main heading such as the name of your university/college
+	
+	\textsc{\Large Computer Science}\\[0.5cm] % Major heading such as course name
+	
+	\textsc{\large BADM500 - Bachelorprojekt i datalogi}\\[0.5cm] % Minor heading such as course title
+	
+	%------------------------------------------------
+	%	Title
+	%------------------------------------------------
+	
+	\HRule\\[0.4cm]
+	
+	{\huge\bfseries Project }\\[0.3cm] % Title of your document
+	
+	\HRule\\[1.5cm]
+	
+	%------------------------------------------------
+	%	Author(s)
+	%------------------------------------------------
+	
+	\begin{minipage}[c]{0.5\textwidth}
+		\begin{flushleft}
+			\large
+			\textit{By}\\
+			[5mm]
+			{Michael Saabye Salling \\}
+			{misal18}\\
+			{29-01-1994}\\
+			\textsc{\Large }\\
+			\end{flushleft}
+	\end{minipage}
+	~
+    \begin{minipage}{0.4\textwidth}
+		\begin{flushright}
+		\large
+  		\kern-1.78cm
+  		 \raggedleft
+  		\textit{Supervisor}\\
+  		\kern+0.5cm
+		Ruben Niederhagen\\
+		\end{flushright}
+	\end{minipage}\\
+	[6cm]
+	
+	% If you don't want a supervisor, uncomment the two lines below and comment the code above
+	%{\large\textit{Author}}\\
+	%John \textsc{Smith} % Your name
+	
+	%------------------------------------------------
+	%	Date
+	%------------------------------------------------
+	
+	\vfill\vfill\vfill % Position the date 3/4 down the remaining page
+	
+	{\large{\today}} % Date, change the \today to a set date if you want to be precise
+
+	
+	\end{titlepage}
+	\clearpage
+
+    \pagenumbering{gobble} %disable page numbering
+    \tableofcontents
+    \clearpage
+    \pagenumbering{arabic} %enable page numbering
+
+    \section{Introduction}
+    Introduce platform, scheme\\
+    
+    \section{Implementation}
+    crucial arithmetic
+    How it works together
+    Reference ideas (Maybe from litterature)
+    - Explain how you got th idea
+    - Did you get the idea from somewhere else, explain it from where
+
+    \section{Evaluation}
+    - Reference implementation
+     * Base reference
+    - Testing, and how it was done
+    - Different stages of implementations
+    - Compare
+    
+    \section{Abstract}
+    
+    
+    \section{Conlusion}
+    
+
+    \clearpage     
+   
+            
+\end{document}
