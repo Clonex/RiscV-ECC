@@ -1,6 +1,6 @@
 \documentclass[12pt]{article}
 \usepackage[a4paper,top=2cm,bottom=2cm,left=2cm,right=2cm]{geometry}
-\usepackage{tocloft}
+% \usepackage{tocloft}
 \usepackage{listings}
 \usepackage{graphicx}
 \usepackage{wrapfig}
@@ -114,30 +114,11 @@
     \clearpage
     \pagenumbering{arabic} %enable page numbering
 
-    \section{Introduction}
-    Introduce platform, scheme\\
-    
-    \section{Implementation}
-    crucial arithmetic
-    How it works together
-    Reference ideas (Maybe from litterature)
-    - Explain how you got th idea
-    - Did you get the idea from somewhere else, explain it from where
-
-    \section{Evaluation}
-    - Reference implementation
-     * Base reference
-    - Testing, and how it was done
-    - Different stages of implementations
-    - Compare
-    
-    \section{Abstract}
-    
-    
-    \section{Conlusion}
-    
+	\input{sections/abstract.tex}
+	\input{sections/introduction.tex}
+	\input{sections/implementation.tex}
+	\input{sections/evaluation.tex}
+	\input{sections/conlusion.tex}
 
     \clearpage     
-   
-            
 \end{document}
