@@ -50,3 +50,13 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+
+*.o
+*.d
+.vexriscvplatform.mk
+*.bin
+*.elf
+compile_commands.json
+.ccls-cache
+build/

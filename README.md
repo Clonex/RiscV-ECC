@@ -31,3 +31,8 @@
  - http://www.cs.ru.nl/bachelors-theses/2020/Mauk_Lemmen___4798937___Optimizing_Elephant_for_RISC-V.pdf
  - https://www.cs.ru.nl/bachelors-theses/2019/Lars_Jellema___4388747___Optimizing_Ascon_on_RISC-V.pdf
  - https://eprint.iacr.org/2020/836.pdf
+
+
+ # Credits
+ 
+ - Thanks to [Mupq](https://github.com/mupq), for supplying the template. 
