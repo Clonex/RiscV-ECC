@@ -48,7 +48,7 @@ int crypto_scalarmult_base(unsigned char *q,
 
 unsigned char *alignedcalloc(unsigned long long len)
 {
-  unsigned char *x = (unsigned char *) malloc(1,len + 256);
+  unsigned char *x = (unsigned char *) calloc(1,len + 256);
   long long i;
   if (!x){
       //fail
@@ -162,12 +162,12 @@ void allocate(void)
 
 
 int main(void){
-    allocate();
     hal_setup(CLOCK_FAST);
     send_start();
     
     send_string("strings", "Starting...");
     
+    allocate();
     crypto_scalarmult(q,n,p);
     crypto_scalarmult_base(r,n);
 

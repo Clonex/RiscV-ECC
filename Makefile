@@ -13,10 +13,15 @@ include config.mk
 # additional dependencies for your the target TARGETNAME.elf file (just
 # define the dependencies, a generic rule for .elf target exists in
 # config.mk).
-DEMO_SRC = src/test.c
+DEMO_SRC = src/demo.c
 DEMO_OBJ = $(call objs,$(DEMO_SRC))
 demo.elf: $(DEMO_OBJ)
 TARGETS += demo.bin
+
+TEST_SRC = src/test.c
+TEST_OBJ = $(call objs,$(TEST_SRC))
+demo.elf: $(TEST_OBJ)
+TARGETS += test.bin
 
 IODEMO_SRC = src/iodemo.c
 IODEMO_OBJ = $(call objs,$(IODEMO_SRC))
