@@ -15,24 +15,48 @@ const unsigned char base[32] = {9};
 #define qlen CRYPTO_BYTES
 #define rlen CRYPTO_BYTES
 
-static unsigned char *m;
-static unsigned char *n;
-static unsigned char *p;
-static unsigned char *q;
-static unsigned char *r;
+  // m = alignedcalloc(mlen);
+  // n = alignedcalloc(nlen);
+  // p = alignedcalloc(plen);
+  // q = alignedcalloc(qlen);
+  // r = alignedcalloc(rlen);
+  // m2 = alignedcalloc(mlen + CRYPTO_BYTES);
+  // n2 = alignedcalloc(nlen + CRYPTO_BYTES);
+  // p2 = alignedcalloc(plen + CRYPTO_BYTES);
+  // q2 = alignedcalloc(qlen + CRYPTO_BYTES);
+  // r2 = alignedcalloc(rlen + CRYPTO_BYTES);
 
-static unsigned char *m2;
-static unsigned char *n2;
-static unsigned char *p2;
-static unsigned char *q2;
-static unsigned char *r2;
+static unsigned char m[mlen] = {0};
+static unsigned char n[nlen] = {0};
+static unsigned char p[plen] = {0};
+static unsigned char q[qlen] = {0};
+static unsigned char r[rlen] = {0};
+
+
+static unsigned char m2[mlen + CRYPTO_BYTES] = {0};
+static unsigned char n2[nlen + CRYPTO_BYTES] = {0};
+static unsigned char p2[plen + CRYPTO_BYTES] = {0};
+static unsigned char q2[qlen + CRYPTO_BYTES] = {0};
+static unsigned char r2[rlen + CRYPTO_BYTES] = {0};
+
+// static unsigned char *m;
+// static unsigned char *n;
+// static unsigned char *p;
+// static unsigned char *q;
+// static unsigned char *r;
+
+// static unsigned char *m2;
+// static unsigned char *n2;
+// static unsigned char *p2;
+// static unsigned char *q2;
+// static unsigned char *r2;
 
 // int rnd[] = {};
 int rndI = 0;
 /**
  * Very bad random polyfill
  **/
-int random()
+long int random()
 {
   rndI++;
   return rndI % 10000; //rnd[rndI % 100];
@@ -46,20 +70,20 @@ int crypto_scalarmult_base(unsigned char *q,
   return crypto_scalarmult(q,n,base);
 }
 
-unsigned char *alignedcalloc(unsigned long long len)
-{
-  unsigned char *x = (unsigned char *) calloc(1,len + 256);
-  long long i;
-  if (!x){
-      //fail
-  }
-  /* will never deallocate so shifting is ok */
-  for (i = 0;i < len + 256;++i) x[i] = random();
-  x += 64;
-  x += 63 & (-(unsigned long) x);
-  for (i = 0;i < len;++i) x[i] = 0;
-  return x;
-}
+// unsigned char *alignedcalloc(unsigned long long len)
+// {
+//   unsigned char *x = (unsigned char *) calloc(1,len + 256);
+//   long long i;
+//   if (!x){
+//       //fail
+//   }
+//   /* will never deallocate so shifting is ok */
+//   for (i = 0;i < len + 256;++i) x[i] = random();
+//   x += 64;
+//   x += 63 & (-(unsigned long) x);
+//   for (i = 0;i < len;++i) x[i] = 0;
+//   return x;
+// }
 
 const char *checksum_compute(void)
 {
@@ -148,33 +172,43 @@ static void printword(const char *s)
 
 void allocate(void)
 {
-  m = alignedcalloc(mlen);
-  n = alignedcalloc(nlen);
-  p = alignedcalloc(plen);
-  q = alignedcalloc(qlen);
-  r = alignedcalloc(rlen);
-  m2 = alignedcalloc(mlen + CRYPTO_BYTES);
-  n2 = alignedcalloc(nlen + CRYPTO_BYTES);
-  p2 = alignedcalloc(plen + CRYPTO_BYTES);
-  q2 = alignedcalloc(qlen + CRYPTO_BYTES);
-  r2 = alignedcalloc(rlen + CRYPTO_BYTES);
+  // m = alignedcalloc(mlen);
+  // n = alignedcalloc(nlen);
+  // p = alignedcalloc(plen);
+  // q = alignedcalloc(qlen);
+  // r = alignedcalloc(rlen);
+  // m2 = alignedcalloc(mlen + CRYPTO_BYTES);
+  // n2 = alignedcalloc(nlen + CRYPTO_BYTES);
+  // p2 = alignedcalloc(plen + CRYPTO_BYTES);
+  // q2 = alignedcalloc(qlen + CRYPTO_BYTES);
+  // r2 = alignedcalloc(rlen + CRYPTO_BYTES);
 }
 
 
 int main(void){
     hal_setup(CLOCK_FAST);
+
     send_start();
-    
     send_string("strings", "Starting...");
+    send_stop();
     
-    allocate();
     crypto_scalarmult(q,n,p);
+    
+    send_start();
+    send_string("strings", "Computing base..");
+    send_stop();
+
     crypto_scalarmult_base(r,n);
+    
+    
+    send_start();
+    send_string("strings", "Computing checksum..");
+    send_stop();
 
     // const char *problem = 
     checksum_compute();
 
-
+    send_start();
     printword(checksum);
 
     send_stop();

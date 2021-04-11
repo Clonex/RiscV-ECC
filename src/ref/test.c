@@ -13,17 +13,38 @@ const unsigned char base[32] = {9};
 #define qlen CRYPTO_BYTES
 #define rlen CRYPTO_BYTES
 
-static unsigned char *m;
-static unsigned char *n;
-static unsigned char *p;
-static unsigned char *q;
-static unsigned char *r;
+// static unsigned char *m;
+// static unsigned char *n;
+// static unsigned char *p;
+// static unsigned char *q;
+// static unsigned char *r;
 
-static unsigned char *m2;
-static unsigned char *n2;
-static unsigned char *p2;
-static unsigned char *q2;
-static unsigned char *r2;
+// static unsigned char *m2;
+// static unsigned char *n2;
+// static unsigned char *p2;
+// static unsigned char *q2;
+// static unsigned char *r2;
+
+static unsigned char m[mlen] = {0};
+static unsigned char n[nlen] = {0};
+static unsigned char p[plen] = {0};
+static unsigned char q[qlen] = {0};
+static unsigned char r[rlen] = {0};
+
+
+static unsigned char m2[mlen + CRYPTO_BYTES] = {0};
+static unsigned char n2[nlen + CRYPTO_BYTES] = {0};
+static unsigned char p2[plen + CRYPTO_BYTES] = {0};
+static unsigned char q2[qlen + CRYPTO_BYTES] = {0};
+static unsigned char r2[rlen + CRYPTO_BYTES] = {0};
+
+
+int rndI = 0;
+long int random(void)
+{
+  rndI++;
+  return rndI % 10000; //rnd[rndI % 100];
+}
 
 char checksum[CRYPTO_SCALARBYTES * 2 + 1];
 
@@ -132,27 +153,27 @@ static void printword(const char *s)
   putchar('\n');
 }
 
-void allocate(void)
-{
-  m = alignedcalloc(mlen);
-  n = alignedcalloc(nlen);
-  p = alignedcalloc(plen);
-  q = alignedcalloc(qlen);
-  r = alignedcalloc(rlen);
-  m2 = alignedcalloc(mlen + CRYPTO_BYTES);
-  n2 = alignedcalloc(nlen + CRYPTO_BYTES);
-  p2 = alignedcalloc(plen + CRYPTO_BYTES);
-  q2 = alignedcalloc(qlen + CRYPTO_BYTES);
-  r2 = alignedcalloc(rlen + CRYPTO_BYTES);
-}
+// void allocate(void)
+// {
+//   m = alignedcalloc(mlen);
+//   n = alignedcalloc(nlen);
+//   p = alignedcalloc(plen);
+//   q = alignedcalloc(qlen);
+//   r = alignedcalloc(rlen);
+//   m2 = alignedcalloc(mlen + CRYPTO_BYTES);
+//   n2 = alignedcalloc(nlen + CRYPTO_BYTES);
+//   p2 = alignedcalloc(plen + CRYPTO_BYTES);
+//   q2 = alignedcalloc(qlen + CRYPTO_BYTES);
+//   r2 = alignedcalloc(rlen + CRYPTO_BYTES);
+// }
 
 
 void main(){
-    allocate();
+    // allocate();
     crypto_scalarmult(q,n,p);
     crypto_scalarmult_base(r,n);
 
-    const char *problem = checksum_compute();
+    checksum_compute();
     printword(checksum);
     // printword(p);
     // printword(q);
