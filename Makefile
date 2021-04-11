@@ -18,11 +18,6 @@ DEMO_OBJ = $(call objs,$(DEMO_SRC))
 demo.elf: $(DEMO_OBJ)
 TARGETS += demo.bin
 
-TEST_SRC = src/test.c
-TEST_OBJ = $(call objs,$(TEST_SRC))
-test.elf: $(TEST_OBJ)
-TARGETS += test.bin
-
 IODEMO_SRC = src/iodemo.c
 IODEMO_OBJ = $(call objs,$(IODEMO_SRC))
 iodemo.elf: $(IODEMO_OBJ)
