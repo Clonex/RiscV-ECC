@@ -28,10 +28,13 @@ static unsigned char p2[plen + CRYPTO_BYTES] = {0};
 static unsigned char q2[qlen + CRYPTO_BYTES] = {0};
 static unsigned char r2[rlen + CRYPTO_BYTES] = {0};
 
+// 07a37cbc142093c8b755dc1b10e86cb426374ad16aa853ed0bdfc0b2b86d1c7c
+
+
 /**
  * Very bad random polyfill
  **/
-int rndI = 0;
+static int rndI = 0;
 long int random()
 {
   rndI++;
@@ -46,33 +49,33 @@ int crypto_scalarmult_base(unsigned char *q,
   return crypto_scalarmult(q,n,base);
 }
 
-void fillMemory(unsigned char *x, unsigned long long len){
-  long long i;
+// void fillMemory(unsigned char *x, unsigned long long len){
+//   unsigned long long i;
 
-  for (i = 0;i < len + 256;++i) x[i] = random();
-  x += 64;
-  x += 63 & (-(unsigned long) x);
-  for (i = 0;i < len;++i) x[i] = 0;
-}
+//   // for (i = 0;i < len + 256;++i) x[i] = random();
+//   // x += 64;
+//   // x += 63 & (-(unsigned long) x);
+//   for (i = 0;i < len;++i) x[i] = 0;
+// }
 
 const char *checksum_compute(void)
 {
   long long i;
-  long long j;
-  long long tests;
+  // long long j;
+  // long long tests;
 
   for (i = 0;i < mlen;++i) m[i] = i;
-  for (i = 0;i < nlen;++i) n[i] = i + 1;
-  for (i = 0;i < plen;++i) p[i] = i + 2;
+  for (i = 0;i < nlen;++i) n[i] = random();
+  for (i = 0;i < plen;++i) p[i] = random();
   for (i = 0;i < qlen;++i) q[i] = i + 3;
   for (i = 0;i < rlen;++i) r[i] = i + 4;
 
-  for (i = -16;i < 0;++i) p[i] = random();
-  for (i = -16;i < 0;++i) n[i] = random();
-  for (i = plen;i < plen + 16;++i) p[i] = random();
-  for (i = nlen;i < nlen + 16;++i) n[i] = random();
-  for (i = -16;i < plen + 16;++i) p2[i] = p[i];
-  for (i = -16;i < nlen + 16;++i) n2[i] = n[i];
+  // for (i = -16;i < 0;++i) p[i] = random();
+  // for (i = -16;i < 0;++i) n[i] = random();
+  // for (i = plen;i < plen + 16;++i) p[i] = random();
+  // for (i = nlen;i < nlen + 16;++i) n[i] = random();
+  // for (i = -16;i < plen + 16;++i) p2[i] = p[i];
+  // for (i = -16;i < nlen + 16;++i) n2[i] = n[i];
   
   crypto_scalarmult_base(p,n);
 
@@ -84,65 +87,48 @@ const char *checksum_compute(void)
   return 0;
 }
 
-static void printword(const char *s)
-{
-  // if (!*s) putchar('-');
-  // while (*s) {
-  //   if (*s == ' ') putchar('_');
-  //   else if (*s == '\t') putchar('_');
-  //   else if (*s == '\r') putchar('_');
-  //   else if (*s == '\n') putchar('_');
-  //   else putchar(*s);
-  //   ++s;
-  // }
-  // putchar(' ');
-  // putchar('\n');
-  send_string("word", s);
-}
-
-void allocate(void)
-{
-  fillMemory(m, mlen);
-  fillMemory(n, nlen);
-  fillMemory(p, plen);
-  fillMemory(q, qlen);
-  fillMemory(r, rlen);
-  fillMemory(m2, mlen + CRYPTO_BYTES);
-  fillMemory(n2, nlen + CRYPTO_BYTES);
-  fillMemory(p2, plen + CRYPTO_BYTES);
-  fillMemory(q2, qlen + CRYPTO_BYTES);
-  fillMemory(r2, rlen + CRYPTO_BYTES);
-}
+// void allocate(void)
+// {
+//   fillMemory(m, mlen);
+//   fillMemory(n, nlen);
+//   fillMemory(p, plen);
+//   fillMemory(q, qlen);
+//   fillMemory(r, rlen);
+//   fillMemory(m2, mlen + CRYPTO_BYTES);
+//   fillMemory(n2, nlen + CRYPTO_BYTES);
+//   fillMemory(p2, plen + CRYPTO_BYTES);
+//   fillMemory(q2, qlen + CRYPTO_BYTES);
+//   fillMemory(r2, rlen + CRYPTO_BYTES);
+// }
 
 
 int main(void){
     hal_setup(CLOCK_FAST);
 
     send_start();
-    send_string("strings", "Starting...");
+    send_string("log", "Starting...");
     send_stop();
 
-    allocate();
+    // allocate();
     
-    crypto_scalarmult(q,n,p);
+    // crypto_scalarmult(q,n,p);
     
-    send_start();
-    send_string("strings", "Computing base..");
-    send_stop();
+    // send_start();
+    // send_string("log", "Computing base..");
+    // send_stop();
 
-    crypto_scalarmult_base(r,n);
+    // crypto_scalarmult_base(r,n);
     
     
     send_start();
-    send_string("strings", "Computing checksum..");
+    send_string("log", "Computing checksum..");
     send_stop();
 
     // const char *problem = 
     checksum_compute();
 
     send_start();
-    printword(checksum);
-
+    send_string("checksum", checksum);
     send_stop();
     // printword(p);
     // printword(q);
