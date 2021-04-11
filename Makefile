@@ -2,6 +2,8 @@ ifdef SRCDIR
 
 VPATH = $(SRCDIR)
 
+#sbt "runMain mupq.PQVexRiscvSim --ram 256,128 --init ../RiscV-ECC/build/demo.bin"
+
 # Add your targets here (or later with TARGET += ...)
 TARGETS =
 
@@ -17,6 +19,11 @@ DEMO_SRC = src/demo.c
 DEMO_OBJ = $(call objs,$(DEMO_SRC))
 demo.elf: $(DEMO_OBJ)
 TARGETS += demo.bin
+
+TEST_SRC = src/test.c
+TEST_OBJ = $(call objs,$(TEST_SRC))
+test.elf: $(TEST_OBJ)
+TARGETS += test.bin
 
 IODEMO_SRC = src/iodemo.c
 IODEMO_OBJ = $(call objs,$(IODEMO_SRC))
