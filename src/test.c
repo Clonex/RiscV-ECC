@@ -171,7 +171,8 @@ int main(void){
     crypto_scalarmult(q,n,p);
     crypto_scalarmult_base(r,n);
 
-    const char *problem = checksum_compute();
+    // const char *problem = 
+    checksum_compute();
 
 
     printword(checksum);
@@ -179,6 +180,7 @@ int main(void){
     send_stop();
     // printword(p);
     // printword(q);
-
+    while (1)
+		  ;
     return 0;
 }

@@ -20,7 +20,7 @@ TARGETS += demo.bin
 
 TEST_SRC = src/test.c
 TEST_OBJ = $(call objs,$(TEST_SRC))
-demo.elf: $(TEST_OBJ)
+test.elf: $(TEST_OBJ)
 TARGETS += test.bin
 
 IODEMO_SRC = src/iodemo.c
