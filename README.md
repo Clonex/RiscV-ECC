@@ -4,15 +4,15 @@
 
 # Schedule
 
-|                                         | Date     | Estimated time | Status |
-|-----------------------------------------|----------|----------------|--------|
-| Rough scedule and litterature           | 04/03    |                | x      |
-| Structure of report done                | 11/03    | 1 week         | x      |
-| First reference implementation running  | 25/03    | 4 days         |        |
-| Report: write introduction about scheme | 29/03    | 2 weeks        |        |
-| Optimization                            | 19/04    | 3 weeks        |        |
-| Report done                             | 10/05    | 3 weeks        |        |
-| Final deadline                          | June 1st |                |        |
+|                                         | Date     | Deadline | Estimated time | Status |
+|-----------------------------------------|----------|----------|----------------|--------|
+| Rough scedule and litterature           | 04/03    | 10/03    |                | x      |
+| Structure of report done                | 11/03    | 18/03    | 1 week         | x      |
+| First reference implementation running  | 25/03    | 29/03    | 4 days         | x      |
+| Report: write introduction about scheme | 29/03    | 14/04    | 2 weeks        | IN     |
+| Optimization                            | 14/04    | 05/05    | 3 weeks        |        |
+| Report done                             | 05/05    | 26/05    | 3 weeks        |        |
+| Final deadline                          | June 1st | 01/06    |                |        |
 
 
 # Litterature
