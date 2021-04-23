@@ -2,6 +2,9 @@ ifdef SRCDIR
 
 VPATH = $(SRCDIR)
 
+
+RNG_DIR = $(wildcard $(SRCDIR)/src/Ia_Classic_Reference/*.c) 
+
 #sbt "runMain mupq.PQVexRiscvSim --ram 256,128 --init ../RiscV-ECC/build/demo.bin"
 
 # Add your targets here (or later with TARGET += ...)
@@ -15,17 +18,17 @@ include config.mk
 # additional dependencies for your the target TARGETNAME.elf file (just
 # define the dependencies, a generic rule for .elf target exists in
 # config.mk).
-DEMO_SRC = src/demo.c
+DEMO_SRC = src/demo.c $(RNG_DIR)
 DEMO_OBJ = $(call objs,$(DEMO_SRC))
 demo.elf: $(DEMO_OBJ)
 TARGETS += demo.bin
 
-TEST_SRC = src/test.c
+TEST_SRC = src/test.c $(RNG_DIR)
 TEST_OBJ = $(call objs,$(TEST_SRC))
 test.elf: $(TEST_OBJ)
 TARGETS += test.bin
 
-IODEMO_SRC = src/iodemo.c
+IODEMO_SRC = src/iodemo.c $(RNG_DIR)
 IODEMO_OBJ = $(call objs,$(IODEMO_SRC))
 iodemo.elf: $(IODEMO_OBJ)
 TARGETS += iodemo.bin

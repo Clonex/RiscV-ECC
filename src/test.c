@@ -3,6 +3,7 @@
 #include <hal.h>
 #include <sendfn.h>
 #include "smult.c"
+#include "rng.h"
 
 #define CRYPTO_BYTES 32
 #define CRYPTO_SCALARBYTES 32
@@ -103,6 +104,11 @@ const char *checksum_compute(void)
 
 
 int main(void){
+
+    unsigned char seed[48] = {0};
+    randombytes_init(seed, NULL, 256);
+
+
     hal_setup(CLOCK_FAST);
 
     send_start();
