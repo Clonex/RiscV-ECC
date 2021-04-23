@@ -1,6 +1,7 @@
 ifdef SRCDIR
 
 VPATH = $(SRCDIR)
+SRCS = $(SRCDIR)/src
 
 ifndef PROJ_DIR
 PROJ_DIR = Ia_Classic_Reference
