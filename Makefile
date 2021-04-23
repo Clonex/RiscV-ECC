@@ -43,7 +43,7 @@ iodemo.elf: $(IODEMO_OBJ)
 TARGETS += iodemo.bin
 
 # Don't forget to add all objects to the OBJ variable
-OBJ += $(DEMO_OBJ)
+OBJ += $(DEMO_OBJ) $(TEST_OBJ) $(IODEMO_OBJ)
 
 targets: $(TARGETS)
 
@@ -80,6 +80,6 @@ Makefile : ;
 
 .PHONY: clean
 clean:
-	rm -rf $(OBJDIR)
+	rm -rf $(OBJDIR) src/Ia_Classic_Reference/*.o
 
 endif
