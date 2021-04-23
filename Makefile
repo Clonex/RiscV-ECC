@@ -14,6 +14,9 @@ all: targets
 
 include config.mk
 
+CFLAGS += -I$(SRCS)/$(PROJ_DIR) -I$(LIBCRYPTO_INC)
+LDLIBS += -L$(LIBCRYPTO_A) -laes_reference -lsha256_reference
+
 # For each target define a TARGETNAME_SRC, TARGETNAME_OBJ and define any
 # additional dependencies for your the target TARGETNAME.elf file (just
 # define the dependencies, a generic rule for .elf target exists in
