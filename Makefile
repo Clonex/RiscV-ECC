@@ -2,8 +2,10 @@ ifdef SRCDIR
 
 VPATH = $(SRCDIR)
 
-
-RNG_DIR = $(wildcard $(SRCDIR)/src/Ia_Classic_Reference/*.c) 
+ifndef PROJ_DIR
+PROJ_DIR = Ia_Classic_Reference
+endif 
+RNG_DIR = $(wildcard $(SRCDIR)/src/$(PROJ_DIR)/*.c) 
 
 #sbt "runMain mupq.PQVexRiscvSim --ram 256,128 --init ../RiscV-ECC/build/demo.bin"
 
@@ -13,6 +15,10 @@ TARGETS =
 all: targets
 
 include config.mk
+
+LIBCRYPTO = $(SRCS)/libcrypto
+LIBCRYPTO_INC = $(LIBCRYPTO)/include/riscvcrypto
+LIBCRYPTO_A = $(LIBCRYPTO)/lib
 
 CFLAGS += -I$(SRCS)/$(PROJ_DIR) -I$(LIBCRYPTO_INC)
 LDLIBS += -L$(LIBCRYPTO_A) -laes_reference -lsha256_reference
