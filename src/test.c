@@ -16,6 +16,10 @@ const unsigned char base[32] = {9};
 #define qlen CRYPTO_BYTES
 #define rlen CRYPTO_BYTES
 
+#define MODE_BLANK 0
+#define MODE_HASH 1
+#define MODE_SEED 2
+
 
 static unsigned char m[mlen] = {0};
 static unsigned char n[nlen] = {0};
@@ -88,57 +92,79 @@ const char *checksum_compute(void)
   return 0;
 }
 
-// void allocate(void)
-// {
-//   fillMemory(m, mlen);
-//   fillMemory(n, nlen);
-//   fillMemory(p, plen);
-//   fillMemory(q, qlen);
-//   fillMemory(r, rlen);
-//   fillMemory(m2, mlen + CRYPTO_BYTES);
-//   fillMemory(n2, nlen + CRYPTO_BYTES);
-//   fillMemory(p2, plen + CRYPTO_BYTES);
-//   fillMemory(q2, qlen + CRYPTO_BYTES);
-//   fillMemory(r2, rlen + CRYPTO_BYTES);
-// }
-
 
 int main(void){
-
     unsigned char seed[48] = {0};
-    randombytes_init(seed, NULL, 256);
-
-
+    // randombytes_init(seed, NULL, 256);
     hal_setup(CLOCK_FAST);
+    int mode = MODE_BLANK;
+    while(1)
+    {
+      if(mode == MODE_HASH)
+      {
+        send_start();
+        send_string("log", "Should hash!");
+        send_stop();
+      }else if(mode == MODE_SEED)
+      {
+				for(int i = 0; i < 48; i++)
+				{
+					int curr = hal_getc();
+					seed[i] = curr;
+				}
+				 randombytes_init(seed, NULL, 256);
+      }
 
-    send_start();
-    send_string("log", "Starting...");
-    send_stop();
+    	mode = MODE_BLANK;
 
-    // allocate();
-    
-    // crypto_scalarmult(q,n,p);
-    
-    // send_start();
-    // send_string("log", "Computing base..");
-    // send_stop();
-
-    // crypto_scalarmult_base(r,n);
-    
-    
-    send_start();
-    send_string("log", "Computing checksum..");
-    send_stop();
-
-    // const char *problem = 
-    checksum_compute();
-
-    send_start();
-    send_string("checksum", checksum);
-    send_stop();
-    // printword(p);
-    // printword(q);
-    while (1)
-		  ;
+      if(mode == MODE_BLANK)
+      {
+        int c = hal_getc();
+        if(c != MODE_BLANK)
+        {
+          mode = c;
+        }
+      }
+    }
     return 0;
 }
+
+// int main(void){
+
+//     unsigned char seed[48] = {0};
+//     randombytes_init(seed, NULL, 256);
+
+
+//     hal_setup(CLOCK_FAST);
+
+//     send_start();
+//     send_string("log", "Starting...");
+//     send_stop();
+
+//     // allocate();
+    
+//     // crypto_scalarmult(q,n,p);
+    
+//     // send_start();
+//     // send_string("log", "Computing base..");
+//     // send_stop();
+
+//     // crypto_scalarmult_base(r,n);
+    
+    
+//     send_start();
+//     send_string("log", "Computing checksum..");
+//     send_stop();
+
+//     // const char *problem = 
+//     checksum_compute();
+
+//     send_start();
+//     send_string("checksum", checksum);
+//     send_stop();
+//     // printword(p);
+//     // printword(q);
+//     while (1)
+// 		  ;
+//     return 0;
+// }
