@@ -69,20 +69,13 @@ const char *checksum_compute(void)
   // long long j;
   // long long tests;
 
-  for (i = 0;i < mlen;++i) m[i] = i;
+  /*for (i = 0;i < mlen;++i) m[i] = i;
   for (i = 0;i < nlen;++i) n[i] = random();
   for (i = 0;i < plen;++i) p[i] = random();
   for (i = 0;i < qlen;++i) q[i] = i + 3;
-  for (i = 0;i < rlen;++i) r[i] = i + 4;
-
-  // for (i = -16;i < 0;++i) p[i] = random();
-  // for (i = -16;i < 0;++i) n[i] = random();
-  // for (i = plen;i < plen + 16;++i) p[i] = random();
-  // for (i = nlen;i < nlen + 16;++i) n[i] = random();
-  // for (i = -16;i < plen + 16;++i) p2[i] = p[i];
-  // for (i = -16;i < nlen + 16;++i) n2[i] = n[i];
+  for (i = 0;i < rlen;++i) r[i] = i + 4;*/
   
-  crypto_scalarmult_base(p,n);
+  //crypto_scalarmult_base(p,n);
 
   for (i = 0;i < CRYPTO_SCALARBYTES;++i) {
     checksum[2 * i] = "0123456789abcdef"[15 & (p[i] >> 4)];
@@ -102,8 +95,18 @@ int main(void){
     {
       if(mode == MODE_HASH)
       {
+        randombytes(m, CRYPTO_SCALARBYTES);
+        randombytes(n, CRYPTO_SCALARBYTES);
+
+        int start = hal_get_time();
+
+        crypto_scalarmult_base(p, m);
+        int cycles = hal_get_time() - start;
+        checksum_compute();
+
         send_start();
-        send_string("log", "Should hash!");
+        send_string("checksum", checksum);
+        send_unsigned("cycles", cycles, 10);
         send_stop();
       }else if(mode == MODE_SEED)
       {
