@@ -1,24 +1,9 @@
-// import SerialPort from "serial-node";
-// const serialList = new SerialPort().list();
-
-// async function start()
-// {
-//     serialList.forEach(d => console.log("Port", d)); 
-// }
-
-// start();
-
 import SerialPort from "serialport";
-import {dataParser} from "./helpers.js";
+import { dataParser, MODES } from "./helpers.js";
+
 const port = new SerialPort('/dev/pts/2', {
     baudRate: 115200
 });
-
-const MODES = {
-    HASH: 1,
-    SEED: 2,
-    PING: 3,
-};
 
 function write(message)
 {
