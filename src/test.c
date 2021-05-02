@@ -19,6 +19,7 @@ const unsigned char base[32] = {9};
 #define MODE_BLANK 0
 #define MODE_HASH 1
 #define MODE_SEED 2
+#define MODE_PING 3
 
 
 static unsigned char m[mlen] = {0};
@@ -95,6 +96,10 @@ int main(void){
     {
       if(mode == MODE_HASH)
       {
+        send_start();
+        send_string("log", "Hashing..");
+        send_stop();
+
         randombytes(m, CRYPTO_SCALARBYTES);
         randombytes(n, CRYPTO_SCALARBYTES);
 
@@ -107,6 +112,11 @@ int main(void){
         send_start();
         send_string("checksum", checksum);
         send_unsigned("cycles", cycles, 10);
+        send_stop();
+      }else if(mode == MODE_PING)
+      {
+        send_start();
+        send_string("ping", "Hello");
         send_stop();
       }else if(mode == MODE_SEED)
       {
