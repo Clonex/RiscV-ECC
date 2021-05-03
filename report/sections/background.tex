@@ -1,0 +1,26 @@
+\section{Background}
+
+
+\subsection{Scheme}
+(~ 1 page)
+
+
+\subsection{RISC-V}
+(~ 1 page)
+The RISC-V ISA is a open standard instruction set which is free and uses a open license. The license allows for development of closed and opensource implemenations for commercial and non-commercial use.
+
+A reduced instruction set computer (RISC) `?????????'
+
+
+Instruction set architecture (ISA) defines the the instructions which the architecture must support. A ISA also specifies instructions for handling data and memory operations, and how data id encoded in the registers.
+
+The RISC-V ISA has modular design with different ISA bases which defines instructions for integers and weak memory ordering, and a number of extensions developed in a collective efforts with researchers and companies.
+A modular approach allows the implementors to disable extension which is not needed, and save money on space and power used. 
+Extensions are activeley being developed, with some being in a "frozen" state. Which is defined as not expected to change during the ratification proccess.
+
+A company might not find the extensions they need for their product. In that situation a custom ISA extension can be used, to add their special instructions. 
+This dosent break the compliance with the main specification, which means that software made for the main specification will still work on the extended ISA.
+
+https://riscv.org/wp-content/uploads/2017/05/riscv-spec-v2.2.pdf
+https://riscv.org/about/faq/
+https://www.design-reuse.com/articles/46237/extending-risc-v-isa-with-a-custom-instruction-set-extension.html

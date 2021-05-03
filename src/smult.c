@@ -58,6 +58,7 @@ static void squeeze(unsigned int a[32])
     a[j] = u & 255;
     u >>= 8;
   }
+  
   u += a[31];
   a[31] = u;
 }
@@ -84,10 +85,16 @@ static void mult(unsigned int out[32],const unsigned int a[32],const unsigned in
   unsigned int j;
   unsigned int u;
 
-  for(i = 0;i < 32;++i) {
+  for(i = 0; i < 32; ++i)
+  {
     u = 0;
-    for(j = 0;j <= i;++j) u += a[j] * b[i - j];
-    for(j = i + 1;j < 32;++j) u += 38 * a[j] * b[i + 32 - j];
+    for(j = 0; j <= i; ++j){
+      u += a[j] * b[i - j];
+    }
+
+    for(j = i + 1; j < 32; ++j){
+      u += 38 * a[j] * b[i + 32 - j];
+    }
     out[i] = u;
   }
   squeeze(out);
@@ -99,11 +106,23 @@ static void mult121665(unsigned int out[32],const unsigned int a[32])
   unsigned int u;
 
   u = 0;
-  for(j = 0;j < 31;++j) { u += 121665 * a[j]; out[j] = u & 255; u >>= 8; }
-  u += 121665 * a[31]; out[31] = u & 127;
+  for(j = 0;j < 31;++j) { 
+    u += 121665 * a[j];
+    out[j] = u & 255;
+    u >>= 8; 
+  }
+
+  u += 121665 * a[31];
+  out[31] = u & 127;
   u = 19 * (u >> 7);
-  for(j = 0;j < 31;++j) { u += out[j]; out[j] = u & 255; u >>= 8; }
-  u += out[j]; out[j] = u;
+
+  for(j = 0;j < 31;++j) {
+    u += out[j];
+    out[j] = u & 255;
+    u >>= 8;
+  }
+  u += out[j];
+  out[j] = u;
 }
 
 static void square(unsigned int out[32],const unsigned int a[32])
@@ -264,9 +283,10 @@ static void recip(unsigned int out[32],const unsigned int z[32])
   /* 2^255 - 21 */ mult(out,t1,z11);
 }
 
-int crypto_scalarmult(unsigned char *q,
+int crypto_scalarmult(unsigned char *q, // Point?
   const unsigned char *n,
-  const unsigned char *p)
+  const unsigned char *p // Point?
+  )
 {
   unsigned int work[96];
   unsigned char e[32];

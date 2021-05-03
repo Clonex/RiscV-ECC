@@ -28,7 +28,6 @@ export function dataParser(data)
     return false;
 }
 
-
 export const MODES = {
     HASH: 1,
     SEED: 2,
