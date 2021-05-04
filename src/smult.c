@@ -336,7 +336,7 @@ int crypto_scalarmult(unsigned char *q,
     work[i] = p[i];
   }
 
-  mainloop(work,e);
+  mainloop(work, e);
   recip(work + 32, work + 32);
   mult(work + 64, work, work + 32);
   freeze(work + 64);
