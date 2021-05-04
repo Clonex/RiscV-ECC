@@ -1,19 +1,29 @@
 \section{Background}
 
-
-\subsection{Scheme}
 (~ 1 page)
+\subsection{Scheme}
 Curve 22519 is an eliptic curve, which is a modern approach of public-key cryptography. It is based on eliptic curves over finite fields.
+The curves is defined in a Montgomery curve form, which is different from the simple Weierstras form which is typically used in elliptic curves.\\
+A Montgomery form is defined as:\\
+(B * y^2) = x^3 + (A * x^2) + x
+Where curve 22519 is given by:\\
+y^2 = x^3 + (486662 * x^2) + x\\
 
+Eliptic-curve Diffie-Hellman (ECDH) is a key agreement scheme, which allows for 2 parties to agree on a shared secret over a insecure channel.
+ECDH is similar to the classical Diffie Hellman key exchange algoritm, but uses point multiplaction instead of modular exponentations.
 
-Eliptic-curve Diffie-Hellman (ECDH) is a 
+(a * G) * b = (b * G) * a = secret\\
+
+Both \textbf{(a * G)} and \textbf{(b * G)} is the public keys of the 2 parties, \textbf{a} and \textbf{b} being their private keys.\\
+Therefore a shared secret can be calculated with only the other parties public key, and its own private key.
+
 
 
 https://cryptobook.nakov.com/asymmetric-key-ciphers/elliptic-curve-cryptography-ecc
 
 
-\subsection{RISC-V}
 (~ 1 page)
+\subsection{RISC-V}
 The RISC-V ISA is a open standard instruction set which is free and uses a open license. The license allows for development of closed and opensource implemenations for commercial and non-commercial use.\\
 The standard is based on reduced instruction set computer (RISC) principles, which is defined as:
 \begin{itemize}
