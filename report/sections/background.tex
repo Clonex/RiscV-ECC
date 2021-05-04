@@ -3,20 +3,32 @@
 
 \subsection{Scheme}
 (~ 1 page)
+Curve 22519 is an eliptic curve, which is a modern approach of public-key cryptography. It is based on eliptic curves over finite fields.
+
+
+Eliptic-curve Diffie-Hellman (ECDH) is a 
+
+
+https://cryptobook.nakov.com/asymmetric-key-ciphers/elliptic-curve-cryptography-ecc
 
 
 \subsection{RISC-V}
 (~ 1 page)
-The RISC-V ISA is a open standard instruction set which is free and uses a open license. The license allows for development of closed and opensource implemenations for commercial and non-commercial use.
-
-A reduced instruction set computer (RISC) `?????????'
-
+The RISC-V ISA is a open standard instruction set which is free and uses a open license. The license allows for development of closed and opensource implemenations for commercial and non-commercial use.\\
+The standard is based on reduced instruction set computer (RISC) principles, which is defined as:
+\begin{itemize}
+    \item \textbf{Single-cycle execution}\\RISC focuses on single-cycle execution.
+    \item \textbf{Hard-wired control, little or no microcode}\\Microcode can add unnecessary overhead to a instruction. It can make a single instruction require multiple cycles.
+    \item \textbf{Simple instructions, few addressing modes}\\It avoids complicated addressing modes and instructions involving microcode. 
+    \item \textbf{Load and store, register-register design}\\It only loads and stores access memory. Every other operation is performed register-to-register.
+    \item \textbf{Efficient, deep pipelining}\\One method to achieve hardware parralism it to use pipelining. A pipeline keeps \textit{n} instructions active at the same time, and loads the next when its finished.
+\end{itemize}
 
 Instruction set architecture (ISA) defines the the instructions which the architecture must support. A ISA also specifies instructions for handling data and memory operations, and how data id encoded in the registers.
 
 The RISC-V ISA has modular design with different ISA bases which defines instructions for integers and weak memory ordering, and a number of extensions developed in a collective efforts with researchers and companies.
-A modular approach allows the implementors to disable extension which is not needed, and save money on space and power used. 
-Extensions are activeley being developed, with some being in a "frozen" state. Which is defined as not expected to change during the ratification proccess.
+A modular approach allows the implementors to disable extension which is not needed, and save money on space and power used. \\
+Extensions are activeley being developed, with some being in a \"frozen\" state. Which is defined as not expected to change during the ratification proccess.
 
 A company might not find the extensions they need for their product. In that situation a custom ISA extension can be used, to add their special instructions. 
 This dosent break the compliance with the main specification, which means that software made for the main specification will still work on the extended ISA.
