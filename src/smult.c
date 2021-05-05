@@ -3,9 +3,15 @@ version 20081011
 Matthew Dempsky
 Public domain.
 Derived from public domain code by D. J. Bernstein.
+
+
+https://git.imada.sdu.dk/niederhagen/CE-project-template/src/commit/d07017d9bbd0b1affc75faf747f55b3ed776b23f/ecdh25519/fe25519.c
+
+
 */
 
 // #include "crypto_scalarmult.h"
+
 
 static void add(unsigned int out[32],const unsigned int a[32],const unsigned int b[32])
 {
@@ -79,13 +85,42 @@ static void freeze(unsigned int a[32])
   for(j = 0;j < 32;++j) a[j] ^= negative & (aorig[j] ^ a[j]);
 }
 
+static void karatsuba(unsigned int out[32], const unsigned int a[32], const unsigned int b[32]){
+  unsigned int l[31] = {0};
+  unsigned int h[31] = {0};
+  unsigned int m[31] = {0};
+
+  unsigned int aSum[16];
+  unsigned int bSum[16];
+  for (int i = 0; i < 16; i++)
+  {
+    aSum[i] = a[i] + a[i + 16];
+    bSum[i] = b[i] + b[i + 16];
+  }
+
+  //mult
+
+  for(int i = 0; i < 31; i++)
+  {
+    out[i] = l[i];
+    out[i + 32] = h[i];
+  }
+  
+  out[31] = 0;
+
+  for(int i = 0; i < 31; i++)
+  {
+    out[i + 16] += m[i] - l[i] - h[i]; 
+  }
+}
+
 static void mult(unsigned int out[32],const unsigned int a[32],const unsigned int b[32])
 {
   unsigned int i;
   unsigned int j;
   unsigned int u;
 
-  for(i = 0; i < 32; ++i)
+  /*for(i = 0; i < 32; ++i)
   {
     u = 0;
     for(j = 0; j <= i; ++j){
@@ -96,8 +131,31 @@ static void mult(unsigned int out[32],const unsigned int a[32],const unsigned in
       u += 38 * a[j] * b[i + 32 - j];
     }
     out[i] = u;
+  }*/
+  karatsuba(out, a, b)
+
+  for(j = i + 1; j < 32; ++j){
+    u += 38 * a[j] * b[i + 32 - j];
   }
+  out[31] = u;
   squeeze(out);
+}
+
+void fe25519_mul(fe25519 *r, const fe25519 *x, const fe25519 *y)
+{
+  int i,j;
+  uint32_t t[63];
+  for(i=0;i<63;i++)t[i] = 0;
+
+  for(i=0;i<32;i++)
+    for(j=0;j<32;j++)
+      t[i+j] += x->v[i] * y->v[j];
+
+  for(i=32;i<63;i++)
+    r->v[i-32] = t[i-32] + times38(t[i]); 
+  r->v[31] = t[31]; /* result now in r[0]...r[31] */
+
+  reduce_mul(r);
 }
 
 static void mult121665(unsigned int out[32],const unsigned int a[32])
@@ -145,6 +203,9 @@ static void square(unsigned int out[32],const unsigned int a[32])
   squeeze(out);
 }
 
+/**
+ * CSwap
+ **/
 static void selecter(unsigned int p[64],unsigned int q[64],const unsigned int r[64],const unsigned int s[64],unsigned int b)
 {
   unsigned int j;
@@ -191,13 +252,14 @@ static void mainloop(unsigned int work[64],const unsigned char e[32])
   for(j = 1;j < 64;++j) xzm[j] = 0;
   
 
-  for(pos = 254;pos >= 0;--pos) {
+  for(pos = 254; pos >= 0; --pos) { // Montgorary ladder step?
     b = e[pos / 8] >> (pos & 7);
     b &= 1;
     selecter(xzmb, xzm1b, xzm, xzm1, b);
-    add(a0, xzmb, xzmb + 32);
-    sub(a0 + 32, xzmb, xzmb + 32);
-    add(a1, xzm1b, xzm1b + 32);
+    add(a0, xzmb, xzmb + 32);         // o = a + (a + 32)
+    sub(a0 + 32, xzmb, xzmb + 32);    // o + 32 = a - (a + 32)
+    
+    add(a1, xzm1b, xzm1b + 32);       // o = a + (a + 32)
     sub(a1 + 32, xzm1b, xzm1b + 32);
     square(b0, a0);
     square(b0 + 32, a0 + 32);
