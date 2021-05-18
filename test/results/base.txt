@@ -1,0 +1,8 @@
+Starting hash..
+Got something { log: 'Hashing..' }
+Got hash {
+  checksum: '726db41826eb9ad9f50ad1b339b530bc48ae812002bdb3f43b83ca2ea9ffcd5b',
+  cycles: 79898076
+}
+Starting hash..
+Got something { log: 'Hashing..' }

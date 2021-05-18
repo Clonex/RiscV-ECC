@@ -28,58 +28,62 @@ static void squeeze(int *a, int length)
   a[l] = u;
 }
 
-static void add(int *out, int *a, int *b, int length)
-{
-  unsigned int j;
-  unsigned int u;
-  u = 0;
-  int l = length - 1;
-  for(j = 0;j < l;++j) { 
-    u += a[j] + b[j];
-    out[j] = u & 255;
-    u >>= 8; 
-  }
-
-  u += a[l] + b[l]; 
-  out[l] = u;
-}
 
 
 static void sub(int *out, int *a, int *b, int length)
 {
-  unsigned int j;
-  unsigned int u;
-  u = 218;
-  int l = length - 1;
-  for(j = 0;j < l;++j) {
-    u += a[j] + 65280 - b[j];
-    out[j] = u & 255;
-    u >>= 8;
+  int c = 0;
+  for(int i = length - 1; i >= 0; i--)
+  {
+    out[i] = (a[i] - b[i] - c) & 0x7FFFFFFF;
+    c = (a[i] - b[i] - c) > 0x7FFFFFFF;
   }
-  u += a[l] - b[l];
-  out[l] = u;
+}
+
+static void add(int *out, int *a, int *b, int length)
+{
+  int c = 0;
+  for(int i = length - 1; i >= 0; i--)
+  {
+    out[i] = (a[i] + b[i] + c) & 0x7FFFFFFF;
+    c = (a[i] + b[i] + c) > 0x7FFFFFFF;
+  }
 }
 
 
-static void mult(int *out, int *a, int *b, int length)
+// static void mult(int *out, int *a, int *b, int length)
+// {
+//   unsigned int i;
+//   unsigned int j;
+//   unsigned int u;
+
+//   for(i = 0; i < length; ++i)
+//   {
+//     u = 0;
+//     for(j = 0; j <= i; ++j){
+//       u += a[j] * b[i - j];
+//     }
+
+//     for(j = i + 1; j < length; ++j){
+//       u += 38 * a[j] * b[i + length - j];
+//     }
+//     out[i] = u;
+//   }
+//   // squeeze(out, length);
+// }
+
+
+int mult(int *out, int *x, int *y, int len)
 {
-  unsigned int i;
-  unsigned int j;
-  unsigned int u;
-
-  for(i = 0; i < length; ++i)
+  for(int i = 0; i < len; i++)
   {
-    u = 0;
-    for(j = 0; j <= i; ++j){
-      u += a[j] * b[i - j];
+    for (int j = 0; j < len; j++)
+    {
+      out[i + j] += x[i] * y[j];
     }
-
-    for(j = i + 1; j < length; ++j){
-      u += 38 * a[j] * b[i + length - j];
-    }
-    out[i] = u;
   }
-  squeeze(out, length);
+
+  return 0;
 }
 
 
@@ -94,10 +98,10 @@ static void karatsuba(int *out, int *x, int *y, int length)
   int M1[length + 1];
   int MM[length + 1];
 
-  for(int i = 0; i < length * 2; i++)
-  {
-      out[i] = 0;
-  }
+  // for(int i = 0; i < length * 2; i++)
+  // {
+  //     out[i] = 0;
+  // }
 
   for(int i = 0; i <= length; i++)
   {
@@ -129,22 +133,18 @@ static void karatsuba(int *out, int *x, int *y, int length)
   add(out, out, LOW, length);
   add(&out[SHIFTED_L], &out[SHIFTED_L], MED, length + 1);
   add(&out[length], &out[length], HIGH, length);
-  
-  /*int a = x[offset] + (x[offset + 1] * 10);
-  int b = x[offset + 2] + (x[offset + 3] * 10);
-  int c = y[offset] + (y[offset + 1] * 10);
-  int d = y[offset + 2] + (y[offset + 3] * 10);
-  
-  int ac = karatsuba()*/
+
+  //  squeeze(out, length);
 }
 
 
 int main(void){
-    int a[32] = {255, 255, 255, 255, 255, 100, 255, 255, 255, 255, 255, 255, 255, 255};
-    int b[32] = {255, 255, 255, 255, 255, 100, 255, 255, 255, 255, 255, 255, 255, 255};
+    int a[32] = {255, 255, 255, 255, 255, 100};
+    int b[32] = {255, 255, 255, 255, 255, 100};
     int c[33] = {0};
     
     karatsuba(c, a, b, 16);
+    squeeze(c, 32);
     for(int i = 0; i <= 32; i++)
     {
         printf("out[%i]: %i\n", i, c[i]);
@@ -152,6 +152,7 @@ int main(void){
     }
     printf("------ OLD -------\n");
     mult(c, a, b, 32);
+    squeeze(c, 32);
     for(int i = 0; i <= 32; i++)
     {
         printf("out[%i]: %i\n", i, c[i]);
