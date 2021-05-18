@@ -1,7 +1,14 @@
 import SerialPort from "serialport";
 import { dataParser, MODES } from "./helpers.js";
 
-const port = new SerialPort('/dev/pts/2', {
+let targetPort = process.argv[2];
+if(!targetPort)
+{
+    console.log("No port defined, default used. (2)");
+    targetPort = 2;
+}
+
+const port = new SerialPort('/dev/pts/' + targetPort, {
     baudRate: 115200
 });
 

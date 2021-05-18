@@ -193,6 +193,7 @@ static void mult(unsigned int out[32], const unsigned int a[32], const unsigned 
     printf("%d,", temp[i]);
   }
   printf("\n");
+  squeeze(out);
   // printf("Karat done!\n\n");
 }
 #endif
