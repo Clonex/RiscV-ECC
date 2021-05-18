@@ -167,6 +167,12 @@ static void mult(unsigned int out[32],const unsigned int a[32],const unsigned in
     out[i] = u;
   }
   
+  printf("Nums:\n");
+  for(int i = 0; i < 32; i++)
+  {
+    printf("%d,", out[i]);
+  }
+  printf("\n");
   squeeze(out);
 }
 #endif
@@ -181,6 +187,12 @@ static void mult(unsigned int out[32], const unsigned int a[32], const unsigned 
     out[i] = temp[i];
   }
 
+  printf("Nums:\n");
+  for(int i = 0; i < 64; i++)
+  {
+    printf("%d,", temp[i]);
+  }
+  printf("\n");
   // printf("Karat done!\n\n");
 }
 #endif
@@ -246,6 +258,7 @@ static void selecter(unsigned int p[64],unsigned int q[64],const unsigned int r[
 
 static void mainloop(unsigned int work[64],const unsigned char e[32])
 {
+  printf("Mainloop\n");
   unsigned int xzm1[64];
   unsigned int xzm[64];
   unsigned int xzmb[64];
@@ -314,6 +327,7 @@ static void mainloop(unsigned int work[64],const unsigned char e[32])
 
 static void recip(unsigned int out[32],const unsigned int z[32])
 {
+  printf("Recip\n");
   unsigned int z2[32];
   unsigned int z9[32];
   unsigned int z11[32];
@@ -408,6 +422,7 @@ static void recip(unsigned int out[32],const unsigned int z[32])
   /* 2^255 - 2^5 */ square(t1, t0);
   /* 2^255 - 21 */ mult(out, t1, z11);
 
+  printf("Last in recip\n");
 }
 
 int crypto_scalarmult(unsigned char *q,
@@ -415,6 +430,7 @@ int crypto_scalarmult(unsigned char *q,
   const unsigned char *p 
   )
 {
+  printf("Starting..\n");
   unsigned int work[96];
   unsigned char e[32];
   unsigned int i;
@@ -430,20 +446,26 @@ int crypto_scalarmult(unsigned char *q,
     work[i] = p[i];
   }
 
+  printf("setup done!\n");
   mainloop(work, e);
+  printf("mainloop done!\n");
   // for(int i = 0; i < 64; i++)
   // {
   //   printf("%c", work[i]);
   // }
   // printf("\n");
   recip(&work[32], &work[32]);
+  printf("recip done!\n");
 
 
   mult(&work[64], work, &work[32]);
+  printf("mult done!\n");
   freeze(&work[64]);
+  printf("freeze done!\n");
 
   for(i = 0; i < 32; ++i){
     q[i] = work[64 + i];
   }
+  printf("done!\n");
   return 0;
 }
