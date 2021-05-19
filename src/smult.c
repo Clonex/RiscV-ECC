@@ -5,7 +5,7 @@ Public domain.
 Derived from public domain code by D. J. Bernstein.
 */
 
-#define ENABLE_KARAT 1
+// #define ENABLE_KARAT 1
 // 541dbfc2d2f3a73670b7146cd1672eb50f11dfa79aff9cabeef07bae2bfa3c0e
 // 40346ea00dfd0ea3e94af214d6a7728ee85b81ca3944faf96b0574e36c79da60
 
@@ -93,24 +93,24 @@ static void multSimple(unsigned int *out, const unsigned int *x, const unsigned 
   }
 }
 
-
+#ifdef ENABLE_KARAT
 #define SHIFTED_L (length >> 1)
 static void karat(unsigned int *out, const unsigned int *x, const unsigned int *y, int length)
 {
   // printf("Karat start length = %d\n", length);
 
-  int LOW[length + 1];
-  int HIGH[length + 1];
-  int MED[length + 2];
+  unsigned int LOW[length + 1];
+  unsigned int HIGH[length + 1];
+  unsigned int MED[length + 2];
 
-  int M0[length + 2];
-  int M1[length + 1];
-  int MM[length + 1];
+  unsigned int M0[length + 2];
+  unsigned int M1[length + 1];
+  unsigned int MM[length + 1];
 
-  // for(int i = 0; i < length * 2; i++)
-  // {
-  //     out[i] = 0;
-  // }
+  for(int i = 0; i < length * 2; i++)
+  {
+      out[i] = 0;
+  }
 
   for(int i = 0; i <= length; i++)
   {
@@ -142,43 +142,41 @@ static void karat(unsigned int *out, const unsigned int *x, const unsigned int *
   addr(out, out, LOW, length);
   addr(&out[SHIFTED_L], &out[SHIFTED_L], MED, length + 1);
   addr(&out[length], &out[length], HIGH, length);
-
-  //  squeeze(out, length);
 }
+#endif
 
 
 #ifndef ENABLE_KARAT
-static void mult(unsigned int out[32],const unsigned int a[32],const unsigned int b[32])
+static void mult(unsigned int out[32], const unsigned int a[32], const unsigned int b[32])
 {
-  unsigned int i;
-  unsigned int j;
-  unsigned int u;
+  // unsigned int i;
+  // unsigned int j;
+  // unsigned int u;
 
-  for(i = 0; i < 32; ++i)
-  {
-    u = 0;
-    for(j = 0; j <= i; ++j){
-      u += a[j] * b[i - j];
-    }
+  // for(i = 0; i < 32; ++i)
+  // {
+  //   u = 0;
+  //   for(j = 0; j <= i; ++j){
+  //     u += a[j] * b[i - j];
+  //   }
 
-    for(j = i + 1; j < 32; ++j){
-      u += 38 * a[j] * b[i + 32 - j];
-    }
-    out[i] = u;
-  }
-  
+  //   for(j = i + 1; j < 32; ++j){
+  //     u += 38 * a[j] * b[i + 32 - j];
+  //   }
+  //   out[i] = u;
+  // }
+  multSimple(out, a, b, 16);
   squeeze(out, out);
 }
 #endif
 
 
 #ifdef ENABLE_KARAT
+unsigned int tempMult[64] = {0};
 static void mult(unsigned int *out, const unsigned int a[32], const unsigned int b[32])
 {
-  unsigned int temp[64] = {0};
-  karat(temp, a, b, 32);
-  squeeze(out, temp);
-
+  karat(tempMult, a, b, 32);
+  squeeze(out, tempMult);
 }
 #endif
 
