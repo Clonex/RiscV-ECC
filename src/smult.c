@@ -6,7 +6,7 @@ Derived from public domain code by D. J. Bernstein.
 */
 
 #define ENABLE_KARAT 1
-// 943123ba43c5b11198cc82a5c9d92776b20f71fd9ff2ecdfabf2763f13527940
+// 541dbfc2d2f3a73670b7146cd1672eb50f11dfa79aff9cabeef07bae2bfa3c0e
 // 40346ea00dfd0ea3e94af214d6a7728ee85b81ca3944faf96b0574e36c79da60
 
 static void subr(unsigned int *out, const unsigned int *a, const unsigned int *b, int length)
@@ -39,7 +39,7 @@ static void sub(unsigned int out[32],const unsigned int a[32],const unsigned int
   subr(out, a, b, 32);
 }
 
-static void squeeze(unsigned int a[32])
+static void squeeze(unsigned int out[32], unsigned int a[32])
 {
   unsigned int j;
   unsigned int u;
@@ -47,23 +47,23 @@ static void squeeze(unsigned int a[32])
   for(j = 0;j < 31;++j)
   { 
     u += a[j];
-    a[j] = u & 255;
+    out[j] = u & 255;
     u >>= 8; 
   }
 
   u += a[31];
-  a[31] = u & 127;
+  out[31] = u & 127;
   u = 19 * (u >> 7);
 
   for(j = 0;j < 31;++j)
   {
     u += a[j];
-    a[j] = u & 255;
+    out[j] = u & 255;
     u >>= 8;
   }
   
   u += a[31];
-  a[31] = u;
+  out[31] = u;
 }
 
 static const unsigned int minusp[32] = {
@@ -167,22 +167,18 @@ static void mult(unsigned int out[32],const unsigned int a[32],const unsigned in
     out[i] = u;
   }
   
-  squeeze(out);
+  squeeze(out, out);
 }
 #endif
 
+
 #ifdef ENABLE_KARAT
-static void mult(unsigned int out[32], const unsigned int a[32], const unsigned int b[32])
+static void mult(unsigned int *out, const unsigned int a[32], const unsigned int b[32])
 {
   unsigned int temp[64] = {0};
   karat(temp, a, b, 32);
-  for(int i = 0; i < 32; i++)
-  {
-    out[i] = temp[i];
-  }
-  squeeze(out);
+  squeeze(out, temp);
 
-  // printf("Karat done!\n\n");
 }
 #endif
 
@@ -228,7 +224,7 @@ static void square(unsigned int out[32],const unsigned int a[32])
     }
     out[i] = u;
   }
-  squeeze(out);
+  squeeze(out, out);
 }
 
 static void selecter(unsigned int p[64],unsigned int q[64],const unsigned int r[64],const unsigned int s[64],unsigned int b)
@@ -267,7 +263,7 @@ static void mainloop(unsigned int work[64],const unsigned char e[32])
   unsigned int b;
   int pos;
 
-  // Join theese loops???
+  // Join 
   for(j = 0;j < 32;++j) xzm1[j] = work[j];
   xzm1[32] = 1;
   for(j = 33;j < 64;++j) xzm1[j] = 0;
