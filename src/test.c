@@ -20,6 +20,7 @@ const unsigned char base[32] = {9};
 #define MODE_HASH 1
 #define MODE_SEED 2
 #define MODE_PING 3
+#define MODE_SET_KARAT 4
 
 
 static unsigned char m[mlen] = {0};
@@ -36,16 +37,7 @@ static unsigned char r2[rlen + CRYPTO_BYTES] = {0};
 
 // 07a37cbc142093c8b755dc1b10e86cb426374ad16aa853ed0bdfc0b2b86d1c7c
 
-
-/**
- * Very bad random polyfill
- **/
-static int rndI = 0;
-long int random()
-{
-  rndI++;
-  return rndI % 10000; //rnd[rndI % 100];
-}
+int KARAT_L = 32;
 
 char checksum[CRYPTO_SCALARBYTES * 2 + 1];
 
@@ -126,6 +118,9 @@ int main(void){
 					seed[i] = curr;
 				}
 				 randombytes_init(seed, NULL, 256);
+      }else if(mode == MODE_SET_KARAT)
+      {
+				KARAT_L = hal_getc();
       }
 
     	mode = MODE_BLANK;

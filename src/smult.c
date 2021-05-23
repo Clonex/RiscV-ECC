@@ -4,67 +4,105 @@ Matthew Dempsky
 Public domain.
 Derived from public domain code by D. J. Bernstein.
 */
-
-// #define ENABLE_KARAT 1
+ #define ENABLE_KARAT 1
 // 541dbfc2d2f3a73670b7146cd1672eb50f11dfa79aff9cabeef07bae2bfa3c0e
 // 40346ea00dfd0ea3e94af214d6a7728ee85b81ca3944faf96b0574e36c79da60
 
-static void subr(unsigned int *out, const unsigned int *a, const unsigned int *b, int length)
-{
-  int c = 0;
-  for(int i = length - 1; i >= 0; i--)
-  {
-    out[i] = (a[i] - b[i] - c) & 0x7FFFFFFF;
-    c = (a[i] - b[i] - c) > 0x7FFFFFFF;
-  }
-}
+// static void subr(unsigned int *out, const unsigned int *a, const unsigned int *b, int length)
+// {
+//   int c = 0;
+//   for(int i = length - 1; i >= 0; i--)
+//   {
+//     out[i] = (a[i] - b[i] - c) & 0x7FFFFFFF;
+//     c = (a[i] - b[i] - c) > 0x7FFFFFFF;
+//   }
+// }
 
-static void addr(unsigned int *out, const unsigned int *a, const unsigned int *b, int length)
-{
-  int c = 0;
-  for(int i = length - 1; i >= 0; i--)
-  {
-    out[i] = (a[i] + b[i] + c) & 0x7FFFFFFF;
-    c = (a[i] + b[i] + c) > 0x7FFFFFFF;
-  }
-}
+// static void addr(unsigned int *out, const unsigned int *a, const unsigned int *b, int length)
+// {
+//   int c = 0;
+//   for(int i = length - 1; i >= 0; i--)
+//   {
+//     out[i] = (a[i] + b[i] + c) & 0x7FFFFFFF;
+//     c = (a[i] + b[i] + c) > 0x7FFFFFFF;
+//   }
+// }
 
-static void add(unsigned int out[32], const unsigned int a[32],const unsigned int b[32])
-{
-  addr(out, a, b, 32);
-}
+// static void add(unsigned int out[32], const unsigned int a[32],const unsigned int b[32])
+// {
+//   addr(out, a, b, 32);
+// }
 
-static void sub(unsigned int out[32],const unsigned int a[32],const unsigned int b[32])
-{
-  subr(out, a, b, 32);
-}
+// static void sub(unsigned int out[32],const unsigned int a[32],const unsigned int b[32])
+// {
+//   subr(out, a, b, 32);
+// }
 
-static void squeeze(unsigned int out[32], unsigned int a[32])
+static void squeeze(unsigned int a[32])
 {
   unsigned int j;
   unsigned int u;
   u = 0;
-  for(j = 0;j < 31;++j)
-  { 
-    u += a[j];
-    out[j] = u & 255;
-    u >>= 8; 
-  }
-
-  u += a[31];
-  out[31] = u & 127;
+  for (j = 0;j < 31;++j) { u += a[j]; a[j] = u & 255; u >>= 8; }
+  u += a[31]; a[31] = u & 127;
   u = 19 * (u >> 7);
+  for (j = 0;j < 31;++j) { u += a[j]; a[j] = u & 255; u >>= 8; }
+  u += a[31]; a[31] = u;
+}
 
-  for(j = 0;j < 31;++j)
-  {
-    u += a[j];
+static void add(unsigned int out[32],const unsigned int a[32],const unsigned int b[32])
+{
+  unsigned int j;
+  unsigned int u;
+  u = 0;
+  for (j = 0;j < 31;++j) { u += a[j] + b[j]; out[j] = u & 255; u >>= 8; }
+  u += a[31] + b[31]; out[31] = u;
+}
+
+static void sub(unsigned int out[32],const unsigned int a[32],const unsigned int b[32])
+{
+  unsigned int j;
+  unsigned int u;
+  u = 218;
+  for (j = 0;j < 31;++j) {
+    u += a[j] + 65280 - b[j];
     out[j] = u & 255;
     u >>= 8;
   }
-  
-  u += a[31];
+  u += a[31] - b[31];
   out[31] = u;
 }
+
+
+static void subSimple(unsigned int *out, const unsigned int *a, const unsigned int *b, int length)
+{
+  for(int i = length - 1; i >= 0; i--)
+  {
+    out[i] = (a[i] - b[i]);
+  }
+}
+
+static void addSimple(unsigned int *out, const unsigned int *a, const unsigned int *b, int length)
+{
+  for(int i = length - 1; i >= 0; i--)
+  {
+    out[i] = (a[i] + b[i]);
+  }
+}
+
+
+static void multSimple(unsigned int *out, const unsigned int *x, const unsigned int *y, int length)
+{
+  for(int i = 0; i < length; i++)
+  {
+    for (int j = 0; j < length; j++)
+    {
+      out[i + j] += x[i] * y[j];
+    }
+  }
+}
+
+
 
 static const unsigned int minusp[32] = {
  19, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128
@@ -82,17 +120,6 @@ static void freeze(unsigned int a[32])
   for(j = 0;j < 32;++j) a[j] ^= negative & (aorig[j] ^ a[j]);
 }
 
-static void multSimple(unsigned int *out, const unsigned int *x, const unsigned int *y, int length)
-{
-  for(int i = 0; i < length; i++)
-  {
-    for (int j = 0; j < length; j++)
-    {
-      out[i + j] += x[i] * y[j];
-    }
-  }
-}
-
 #ifdef ENABLE_KARAT
 #define SHIFTED_L (length >> 1)
 static void karat(unsigned int *out, const unsigned int *x, const unsigned int *y, int length)
@@ -107,11 +134,6 @@ static void karat(unsigned int *out, const unsigned int *x, const unsigned int *
   unsigned int M1[length + 1];
   unsigned int MM[length + 1];
 
-  for(int i = 0; i < length * 2; i++)
-  {
-      out[i] = 0;
-  }
-
   for(int i = 0; i <= length; i++)
   {
       LOW[i] = 0;
@@ -122,7 +144,7 @@ static void karat(unsigned int *out, const unsigned int *x, const unsigned int *
       MM[i] = 0;
   }
 
-  if(length > 4)
+  if(length > KARAT_L)
   {
     karat(LOW, &x[0], &y[0], SHIFTED_L);
     karat(HIGH, &x[SHIFTED_L], &y[SHIFTED_L], SHIFTED_L);
@@ -131,52 +153,58 @@ static void karat(unsigned int *out, const unsigned int *x, const unsigned int *
     multSimple(HIGH, &x[SHIFTED_L], &y[SHIFTED_L], SHIFTED_L);
   }
 
-  addr(M0, &x[0], &x[SHIFTED_L], SHIFTED_L);
-  addr(M1, &y[0], &y[SHIFTED_L], SHIFTED_L);
+  addSimple(M0, &x[0], &x[SHIFTED_L], SHIFTED_L);
+  addSimple(M1, &y[0], &y[SHIFTED_L], SHIFTED_L);
 
   multSimple(MM, M0, M1, SHIFTED_L + 1);
 
-  subr(M0, MM, LOW, length + 1);
-  subr(MED, M0, HIGH, length + 1);
+  subSimple(M0, MM, LOW, length + 1);
+  subSimple(MED, M0, HIGH, length + 1);
 
-  addr(out, out, LOW, length);
-  addr(&out[SHIFTED_L], &out[SHIFTED_L], MED, length + 1);
-  addr(&out[length], &out[length], HIGH, length);
+  addSimple(out, out, LOW, length);
+  addSimple(&out[SHIFTED_L], &out[SHIFTED_L], MED, length + 1);
+  addSimple(&out[length], &out[length], HIGH, length);
 }
 #endif
 
-
+unsigned int tempMult[64] = {0};
 #ifndef ENABLE_KARAT
 static void mult(unsigned int out[32], const unsigned int a[32], const unsigned int b[32])
 {
-  // unsigned int i;
-  // unsigned int j;
-  // unsigned int u;
+  unsigned int i;
+  unsigned int j;
+  unsigned int u;
 
-  // for(i = 0; i < 32; ++i)
-  // {
-  //   u = 0;
-  //   for(j = 0; j <= i; ++j){
-  //     u += a[j] * b[i - j];
-  //   }
+  for(i = 0; i < 32; ++i)
+  {
+    u = 0;
+    for(j = 0; j <= i; ++j){
+      u += a[j] * b[i - j];
+    }
 
-  //   for(j = i + 1; j < 32; ++j){
-  //     u += 38 * a[j] * b[i + 32 - j];
-  //   }
-  //   out[i] = u;
-  // }
-  multSimple(out, a, b, 16);
-  squeeze(out, out);
+    for(j = i + 1; j < 32; ++j){
+      u += 38 * a[j] * b[i + 32 - j];
+    }
+    out[i] = u;
+  }
+  
+   squeeze(out);
 }
 #endif
 
 
 #ifdef ENABLE_KARAT
-unsigned int tempMult[64] = {0};
 static void mult(unsigned int *out, const unsigned int a[32], const unsigned int b[32])
 {
   karat(tempMult, a, b, 32);
-  squeeze(out, tempMult);
+  for (int i = 0; i < 32; i++)
+  {
+    out[i] = tempMult[i] + tempMult[i + 32] * 38;
+
+    tempMult[i] = 0;
+    tempMult[i + 32] = 0;
+  }
+  squeeze(out);
 }
 #endif
 
@@ -222,7 +250,7 @@ static void square(unsigned int out[32],const unsigned int a[32])
     }
     out[i] = u;
   }
-  squeeze(out, out);
+  squeeze(out);
 }
 
 static void selecter(unsigned int p[64],unsigned int q[64],const unsigned int r[64],const unsigned int s[64],unsigned int b)

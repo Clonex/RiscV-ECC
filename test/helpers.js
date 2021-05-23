@@ -32,4 +32,5 @@ export const MODES = {
     HASH: 1,
     SEED: 2,
     PING: 3,
+    SET_KARAT: 4,
 };
