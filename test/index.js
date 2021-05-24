@@ -22,11 +22,38 @@ port.on('open', async () => {
     await write([MODES.PING]);
 });
 
+let karaData = [];
+let karaI = 0;
+
 port.on('data', async (data) => {
     let message = dataParser(data);
     if(message)
     {
-        if(message.ping)
+        if(typeof karaI === "number" && (message.ping || message.checksum))
+        {
+            if(message.checksum)
+            {
+                karaData[karaI] = message.cycles;
+                if(karaI >= 64)
+                {
+                    console.log("Got results", karaData);
+                    return;
+                }
+                console.log("Got results for", karaI, message);
+            }else{
+                console.log("Starting..");
+            }
+            await write([MODES.SET_KARAT]);
+            await write([karaI++]);
+
+            await write([MODES.SEED]);
+            for(let i = 0; i < 48; i++)
+            {
+                await write([7]);
+            }
+
+            await write([MODES.HASH]);
+        }else if(message.ping)
         {
             console.log("Setting seed..");
             await write([MODES.SEED]);
