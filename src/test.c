@@ -98,7 +98,7 @@ int main(void){
       }else if(mode == MODE_PING)
       {
         send_start();
-        send_string("ping", "Hello");
+        send_string("ping", "pong");
         send_stop();
       }else if(mode == MODE_SEED)
       {
@@ -117,11 +117,7 @@ int main(void){
 
       if(mode == MODE_BLANK)
       {
-        int c = hal_getc();
-        if(c != MODE_BLANK)
-        {
-          mode = c;
-        }
+        mode = hal_getc();
       }
     }
     return 0;

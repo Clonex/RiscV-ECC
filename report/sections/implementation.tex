@@ -9,7 +9,7 @@
 
 This section will describe how the reference implemenation from Bernstein was ported, and how the Karatsuba algorithm is implemented in practice.
 \subsection{Reference implementation}
-The reference implementation was straight forward to port, as the arithmetic itself dosent have to be changed.
+The reference implementation was straight forward to port, as the arithmetic itself could be used directly without any changes.
 
 
 The \textit{checksum_compute} function used the \texttt{random()} function given in the C standard libary to fill \texttt{p} and \texttt{n} with random values. In the main implementation \texttit{randombytes()} is used to fill \texttt{p} and \texttt{n} with random values, as \texttit{randombytes()} is supplied with the implementation from the \cite[rainbowgit implemenation]{rainbowgit}, 
@@ -18,3 +18,42 @@ As the C standard libary is not available an alternative to the \texttt{random()
 
 
 \subsection{Karatsuba algorithm}
+
+
+\subsection{Testing}
+I wanted to be able to test the code with different values, without having to recompile and restart the emulation every time. The \textit{HAL} library implements a series of serial-functions. Which allows the code to communicate with the host.
+\subsubsection{Device}
+The embeded device is waiting for the host to send a command, which it acts on. It has 5 different modes that the host can use. 
+\lstinputlisting[language=c, firstline=19, lastline=23]{../src/test.c}
+
+\textbf{MODE_BLANK} is the default mode. When the device is in \textit{MODE_BLANK} it waits for a new mode from the host.\\
+\lstinputlisting[language=c, firstline=115, lastline=121]{../src/test.c}\\
+
+\textbf{MODE_HASH} initializes the \textit{m} and \textit{n} memory with random values, and times the amount of cycles it takes to run \texttit{crypto_scalarmult_base}. Then sends the \textit{checksum} and \textit{cycles} to the host.\\ 
+\lstinputlisting[language=c, firstline=85, lastline=97]{../src/test.c}\\
+
+\textbf{MODE_SEED} takes 48 integers, which is put into the seed memory space, and then the seed is set with \textit{randombytes_init}.\\
+\lstinputlisting[language=c, firstline=105, lastline=110]{../src/test.c}\\
+
+\textbf{MODE_PING} is used as part of the initializion of the connection with the test-script on the host. When the host connects to the serial port it sends a \textit{MODE_PING} command and waits for a reply to ensure the device is listening.\\
+\lstinputlisting[language=c, firstline=100, lastline=102]{../src/test.c}\\
+
+\textbf{MODE_SET_KARAT} sets \textit{KARAT_L} which defines the length of the numbers when the Karatsuba algorithm should use schoolbook multiplication.\\
+\lstinputlisting[language=c, firstline=113, lastline=113]{../src/test.c}\\
+
+\subsubsection{Host}
+On the host a test script to connect to the device was written. The script is made in \cite[NodeJS]{nodejs}, and uses the library \cite[SerialPort]{serialport} to establish a connection and communicate with the device.
+A wrapper function is written to convert the function \textit{port.write(msg, callback)} into a \textit{async} function. 
+\lstinputlisting[language=javascript, firstline=15, lastline=18]{../test/index.js}\\
+
+When the connection is opened, the \textit{MODE_PING} command is sent to the device.\\
+\lstinputlisting[language=javascript, firstline=20, lastline=22]{../test/index.js}\\
+
+As the data from the embeded device is sent in chunks the script needs to be able to detect when a message has been fully recieved. As a message always ends with \texttt{\}} and then \textit{,} the script will look for thoose two characters to detect when a message has been fully recieved.
+\lstinputlisting[language=javascript, firstline=1, lastline=29]{../test/helpers.js}\\
+The \textit{dataParser} function copies every part of a string into a temporary string, and checks the condition described above. If the message has been recived it will return a \textit{JSON} object, otherwise it will return \textit{false}.
+
+The function \texttt{dataParser} is called when data is recieved, and only acted upon if if returns a object.  
+\lstinputlisting[language=javascript, firstline=28, lastline=31]{../test/index.js}\\
+The exsistance of keys on the message object, is used to check what kind of message it is.
+
