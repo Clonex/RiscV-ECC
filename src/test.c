@@ -35,7 +35,6 @@ static unsigned char p2[plen + CRYPTO_BYTES] = {0};
 static unsigned char q2[qlen + CRYPTO_BYTES] = {0};
 static unsigned char r2[rlen + CRYPTO_BYTES] = {0};
 
-// 07a37cbc142093c8b755dc1b10e86cb426374ad16aa853ed0bdfc0b2b86d1c7c
 
 int KARAT_L = 32;
 
@@ -46,15 +45,6 @@ int crypto_scalarmult_base(unsigned char *q,
 {
   return crypto_scalarmult(q,n,base);
 }
-
-// void fillMemory(unsigned char *x, unsigned long long len){
-//   unsigned long long i;
-
-//   // for (i = 0;i < len + 256;++i) x[i] = random();
-//   // x += 64;
-//   // x += 63 & (-(unsigned long) x);
-//   for (i = 0;i < len;++i) x[i] = 0;
-// }
 
 const char *checksum_compute(void)
 {
@@ -136,43 +126,3 @@ int main(void){
     }
     return 0;
 }
-
-// int main(void){
-
-//     unsigned char seed[48] = {0};
-//     randombytes_init(seed, NULL, 256);
-
-
-//     hal_setup(CLOCK_FAST);
-
-//     send_start();
-//     send_string("log", "Starting...");
-//     send_stop();
-
-//     // allocate();
-    
-//     // crypto_scalarmult(q,n,p);
-    
-//     // send_start();
-//     // send_string("log", "Computing base..");
-//     // send_stop();
-
-//     // crypto_scalarmult_base(r,n);
-    
-    
-//     send_start();
-//     send_string("log", "Computing checksum..");
-//     send_stop();
-
-//     // const char *problem = 
-//     checksum_compute();
-
-//     send_start();
-//     send_string("checksum", checksum);
-//     send_stop();
-//     // printword(p);
-//     // printword(q);
-//     while (1)
-// 		  ;
-//     return 0;
-// }

@@ -8,6 +8,7 @@ compile_commands.json
 build/
 
 *.log
+*/.vscode/*
 
 *.DS_Store
 

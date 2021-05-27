@@ -4,39 +4,9 @@ Matthew Dempsky
 Public domain.
 Derived from public domain code by D. J. Bernstein.
 */
- #define ENABLE_KARAT 1
-// 541dbfc2d2f3a73670b7146cd1672eb50f11dfa79aff9cabeef07bae2bfa3c0e
-// 40346ea00dfd0ea3e94af214d6a7728ee85b81ca3944faf96b0574e36c79da60
+#define ENABLE_KARAT 1
 
-// static void subr(unsigned int *out, const unsigned int *a, const unsigned int *b, int length)
-// {
-//   int c = 0;
-//   for(int i = length - 1; i >= 0; i--)
-//   {
-//     out[i] = (a[i] - b[i] - c) & 0x7FFFFFFF;
-//     c = (a[i] - b[i] - c) > 0x7FFFFFFF;
-//   }
-// }
-
-// static void addr(unsigned int *out, const unsigned int *a, const unsigned int *b, int length)
-// {
-//   int c = 0;
-//   for(int i = length - 1; i >= 0; i--)
-//   {
-//     out[i] = (a[i] + b[i] + c) & 0x7FFFFFFF;
-//     c = (a[i] + b[i] + c) > 0x7FFFFFFF;
-//   }
-// }
-
-// static void add(unsigned int out[32], const unsigned int a[32],const unsigned int b[32])
-// {
-//   addr(out, a, b, 32);
-// }
-
-// static void sub(unsigned int out[32],const unsigned int a[32],const unsigned int b[32])
-// {
-//   subr(out, a, b, 32);
-// }
+int KARAT_L;
 
 static void squeeze(unsigned int a[32])
 {
