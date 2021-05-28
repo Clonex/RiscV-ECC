@@ -14,6 +14,7 @@
 \definecolor{codegreen}{rgb}{0,0.6,0}
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
 \definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{codepurpler}{rgb}{0.5 0.0 0.2}
 \definecolor{backcolour}{rgb}{0.95,0.95,0.92}
 \lstdefinestyle{mystyle}{
     backgroundcolor=\color{backcolour},   
@@ -31,9 +32,24 @@
     showspaces=false,                
     showstringspaces=false,
     showtabs=false,                  
-    tabsize=2
+    tabsize=2,
+    gobble=2
 }
 
+\lstdefinelanguage{JavaScript}{
+  keywords={break, case, catch, continue, debugger, default, delete, do, else, false, finally, for, function, if, in, instanceof, new, null, return, switch, this, throw, true, try, typeof, var, void, while, with},
+  morecomment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  morestring=[b]',
+  morestring=[b]",
+  ndkeywords={class, export, boolean, await, throw, implements, import, this, async},
+  keywordstyle=\color{magenta}\bfseries,
+  ndkeywordstyle=\color{codepurpler}\bfseries,
+  identifierstyle=\color{black},
+  commentstyle=\color{codegreen}\ttfamily,
+  stringstyle=\color{codepurple}\ttfamily,
+  sensitive=true
+}
 \lstset{style=mystyle}
  
 \renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}} % for dots in table of contents for sections

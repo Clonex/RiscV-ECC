@@ -12,8 +12,8 @@ This section will describe how the reference implemenation from Bernstein was po
 The reference implementation was straight forward to port, as the arithmetic itself could be used directly without any changes.
 
 
-The \texttt{checksum\_compute} function used the \texttt{random\(\)} function given in the C standard libary to fill \texttt{p} and \texttt{n} with random values. In the main implementation \texttt{randombytes\(\)} is used to fill \texttt{p} and \texttt{n} with random values, as \texttt{randombytes\(\)} is supplied with the implementation from the rainbowgit\citeimplemenation]{rainbowgit}, 
-As the C standard libary is not available an alternative to the \texttt{random\(\)} function is used. The library rainbowgit\cite{rainbowgit} is used for the \texttt{randombytes\(\)} implemenation, this implementation uses \texttt{AES} to give a pseudorandom output. As \textit{AES} isnt supplied either, the libcrypto\citelibrary]{libcrypto}, it can be found in \textit{src/libcrypto}. It is maintained by the official RISC-V organization, and is actively being developed.
+The \texttt{checksum\_compute} function used the \texttt{random\(\)} function given in the C standard libary to fill \texttt{p} and \texttt{n} with random values. In the main implementation \texttt{randombytes\(\)} is used to fill \texttt{p} and \texttt{n} with random values, as \texttt{randombytes\(\)} is supplied with the implementation from the rainbowgit implemenation\cite{rainbowgit}, 
+As the C standard libary is not available an alternative to the \texttt{random\(\)} function is used. The library rainbowgit\cite{rainbowgit} is used for the \texttt{randombytes\(\)} implemenation, this implementation uses \texttt{AES} to give a pseudorandom output. As \textit{AES} isnt supplied either, the libcrypto library\cite{libcrypto}, it can be found in \textit{src/libcrypto}. It is maintained by the official RISC-V organization, and is actively being developed.
 
 
 
