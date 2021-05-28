@@ -8,14 +8,14 @@ As multiplication is a
 
 Multiplication is used intensly during the encryption[] steps, this was a focus of optimization. The reference implementation of the curve uses simple schoolbook multiplication.
 Where every single digit is multiplied with the corresponding digit in the other number, and a carry is carried on to the next iteration when the result is bigger than the base. This carry will then be multiplied with the next set of digits.\\
-[EXAMPLE IMAGE]\\
-The schoolbook approach requires $n^{2}$ single-digit products. 
+EXAMPLE IMAGE\\
+The schoolbook approach require $n^{2}$ single-digit products. 
 This approach is the approach used in the reference implemention, which can be replaced with a more optimal algorithm.
 \\
 
 The Karatsuba algorithm 
-$A_0 \times B_0 + 2^{m}((A_0 \plus A_1) \times (B_0 \plus B_1) - A_0 \times B_0 - A_1 \times B_1) + 2^{2m} A_1 \times B_1$
+\[A_0 \times B_0 + 2^{m}((A_0 + A_1) \times (B_0 + B_1) - A_0 \times B_0 - A_1 \times B_1) + 2^{2m} A_1 \times B_1\]
 This approach requires 5 products, with 2 of them being the same multiplications. For this reason 2 of them can be stored and them re-used without any calculations.
-\\[EXAMPLE IMAGE]\\
+\\EXAMPLE IMAGE\\
 The Karatsuba algorithm uses more additions compared to the schoolbook approach which uses 4 multiplications and 3 additions, this uses 3 multiplications, 4 additions and 2 subtractions. So the algorithm saves multiplications at the cost of additions and subtractions. Thus is Karatsuba faster if multiplication is more expensive than additions and subtractions. 
 

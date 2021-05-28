@@ -8,6 +8,8 @@
 \usepackage{xcolor}
 \usepackage{scrextend}
 \usepackage{hyperref}
+\usepackage{biblatex}
+\addbibresource{biblography.bib}
 
 \definecolor{codegreen}{rgb}{0,0.6,0}
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
@@ -31,6 +33,7 @@
     showtabs=false,                  
     tabsize=2
 }
+
 \lstset{style=mystyle}
  
 \renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}} % for dots in table of contents for sections
@@ -113,17 +116,17 @@
     \tableofcontents
     \clearpage
     \pagenumbering{arabic} %enable page numbering
-
-	\input{sections/abstract.tex}
+    
+    \input{sections/abstract.tex}
 	\input{sections/introduction.tex}
 	\input{sections/background.tex}
 	\input{sections/optimization.tex}
+	
 	\input{sections/implementation.tex}
+	
 	\input{sections/evaluation.tex}
 	\input{sections/conlusion.tex}
-	
-	\bibliographystyle{plain}
-	\bibliography{bibliography}
+    \printbibliography
 
     \clearpage     
 \end{document}

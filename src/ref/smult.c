@@ -4,51 +4,8 @@ Matthew Dempsky
 Public domain.
 Derived from public domain code by D. J. Bernstein.
 */
- // #define ENABLE_KARAT 1
-// 541dbfc2d2f3a73670b7146cd1672eb50f11dfa79aff9cabeef07bae2bfa3c0e
-// 40346ea00dfd0ea3e94af214d6a7728ee85b81ca3944faf96b0574e36c79da60
 
-// static void subr(unsigned int *out, const unsigned int *a, const unsigned int *b, int length)
-// {
-//   int c = 0;
-//   for(int i = length - 1; i >= 0; i--)
-//   {
-//     out[i] = (a[i] - b[i] - c) & 0x7FFFFFFF;
-//     c = (a[i] - b[i] - c) > 0x7FFFFFFF;
-//   }
-// }
-
-// static void addr(unsigned int *out, const unsigned int *a, const unsigned int *b, int length)
-// {
-//   int c = 0;
-//   for(int i = length - 1; i >= 0; i--)
-//   {
-//     out[i] = (a[i] + b[i] + c) & 0x7FFFFFFF;
-//     c = (a[i] + b[i] + c) > 0x7FFFFFFF;
-//   }
-// }
-
-// static void add(unsigned int out[32], const unsigned int a[32],const unsigned int b[32])
-// {
-//   addr(out, a, b, 32);
-// }
-
-// static void sub(unsigned int out[32],const unsigned int a[32],const unsigned int b[32])
-// {
-//   subr(out, a, b, 32);
-// }
-
-static void squeeze(unsigned int a[32])
-{
-  unsigned int j;
-  unsigned int u;
-  u = 0;
-  for (j = 0;j < 31;++j) { u += a[j]; a[j] = u & 255; u >>= 8; }
-  u += a[31]; a[31] = u & 127;
-  u = 19 * (u >> 7);
-  for (j = 0;j < 31;++j) { u += a[j]; a[j] = u & 255; u >>= 8; }
-  u += a[31]; a[31] = u;
-}
+// #include "crypto_scalarmult.h"
 
 static void add(unsigned int out[32],const unsigned int a[32],const unsigned int b[32])
 {
@@ -73,58 +30,17 @@ static void sub(unsigned int out[32],const unsigned int a[32],const unsigned int
   out[31] = u;
 }
 
-
-static void subSimple(unsigned int *out, const unsigned int *a, const unsigned int *b, int length)
+static void squeeze(unsigned int a[32])
 {
-  for(int i = length - 1; i >= 0; i--)
-  {
-    out[i] = (a[i] - b[i]);
-  }
-}
-
-static void addSimple(unsigned int *out, const unsigned int *a, const unsigned int *b, int length)
-{
-  for(int i = length - 1; i >= 0; i--)
-  {
-    out[i] = (a[i] + b[i]);
-  }
-}
-
-static void multOld(unsigned int out[32],const unsigned int a[32],const unsigned int b[32])
-{
-  unsigned int i;
   unsigned int j;
   unsigned int u;
-
-  for(i = 0; i < 32; ++i)
-  {
-    u = 0;
-    for(j = 0; j <= i; ++j){
-      u += a[j] * b[i - j];
-    }
-
-    for(j = i + 1; j < 32; ++j){
-      u += 38 * a[j] * b[i + 32 - j];
-    }
-    out[i] = u;
-  }
-  
-   squeeze(out);
+  u = 0;
+  for (j = 0;j < 31;++j) { u += a[j]; a[j] = u & 255; u >>= 8; }
+  u += a[31]; a[31] = u & 127;
+  u = 19 * (u >> 7);
+  for (j = 0;j < 31;++j) { u += a[j]; a[j] = u & 255; u >>= 8; }
+  u += a[31]; a[31] = u;
 }
-
-
-static void multSimple(unsigned int *out, const unsigned int *x, const unsigned int *y, int length)
-{
-  for(int i = 0; i < length; i++)
-  {
-    for (int j = 0; j < length; j++)
-    {
-      out[i + j] += x[i] * y[j];
-    }
-  }
-}
-
-
 
 static const unsigned int minusp[32] = {
  19, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128
@@ -136,132 +52,38 @@ static void freeze(unsigned int a[32])
   unsigned int j;
   unsigned int negative;
 
-  for(j = 0;j < 32;++j) aorig[j] = a[j];
+  for (j = 0;j < 32;++j) aorig[j] = a[j];
   add(a,a,minusp);
   negative = -((a[31] >> 7) & 1);
-  for(j = 0;j < 32;++j) a[j] ^= negative & (aorig[j] ^ a[j]);
+  for (j = 0;j < 32;++j) a[j] ^= negative & (aorig[j] ^ a[j]);
 }
 
-#ifdef ENABLE_KARAT
-#define SHIFTED_L (length >> 1)
-static void karat(unsigned int *out, const unsigned int *x, const unsigned int *y, int length)
+static void mult(unsigned int out[32],const unsigned int a[32],const unsigned int b[32])
 {
-  // printf("Karat start length = %d\n", length);
+  unsigned int i;
+  unsigned int j;
+  unsigned int u;
 
-  unsigned int LOW[length + 1];
-  unsigned int HIGH[length + 1];
-  unsigned int MED[length + 2];
-
-  unsigned int M0[length + 2];
-  unsigned int M1[length + 1];
-  unsigned int MM[length + 1];
-
-  for(int i = 0; i < length * 2; i++)
-  {
-      out[i] = 0;
-  }
-
-  for(int i = 0; i <= length; i++)
-  {
-      LOW[i] = 0;
-      HIGH[i] = 0;
-      MED[i] = 0;
-      M0[i] = 0;
-      M1[i] = 0;
-      MM[i] = 0;
-  }
-
-  if(length > 4)
-  {
-    karat(LOW, &x[0], &y[0], SHIFTED_L);
-    karat(HIGH, &x[SHIFTED_L], &y[SHIFTED_L], SHIFTED_L);
-  }else{  
-    multSimple(LOW, &x[0], &y[0], SHIFTED_L);
-    multSimple(HIGH, &x[SHIFTED_L], &y[SHIFTED_L], SHIFTED_L);
-  }
-
-  addSimple(M0, &x[0], &x[SHIFTED_L], SHIFTED_L);
-  addSimple(M1, &y[0], &y[SHIFTED_L], SHIFTED_L);
-
-  multSimple(MM, M0, M1, SHIFTED_L + 1);
-
-  subSimple(M0, MM, LOW, length + 1);
-  subSimple(MED, M0, HIGH, length + 1);
-
-  addSimple(out, out, LOW, length);
-  addSimple(&out[SHIFTED_L], &out[SHIFTED_L], MED, length + 1);
-  addSimple(&out[length], &out[length], HIGH, length);
-}
-#endif
-
-unsigned int tempMult[64] = {0};
-#ifndef ENABLE_KARAT
-static void mult(unsigned int out[32], const unsigned int a[32], const unsigned int b[32])
-{
-  // unsigned int i;
-  // unsigned int j;
-  // unsigned int u;
-
-  // for(i = 0; i < 32; ++i)
-  // {
-  //   u = 0;
-  //   for(j = 0; j <= i; ++j){
-  //     u += a[j] * b[i - j];
-  //   }
-
-  //   for(j = i + 1; j < 32; ++j){
-  //     u += 38 * a[j] * b[i + 32 - j];
-  //   }
-  //   out[i] = u;
-  // }
-  // multSimple(out, a, b, 32);
-  
-
-  // squeeze(out, out);
-
-  multOld(out, a, b);
-}
-#endif
-
-
-#ifdef ENABLE_KARAT
-static void mult(unsigned int *out, const unsigned int a[32], const unsigned int b[32])
-{
-  karat(tempMult, a, b, 32);
-  for (int i = 0; i < 32; i++)
-  {
-    out[i] = tempMult[i] + tempMult[i + 32] * 38;
-
-    tempMult[i] = 0;
-    tempMult[i + 32] = 0;
+  for (i = 0;i < 32;++i) {
+    u = 0;
+    for (j = 0;j <= i;++j) u += a[j] * b[i - j];
+    for (j = i + 1;j < 32;++j) u += 38 * a[j] * b[i + 32 - j];
+    out[i] = u;
   }
   squeeze(out);
 }
-#endif
 
-static void mult121665(unsigned int out[32], const unsigned int a[32])
+static void mult121665(unsigned int out[32],const unsigned int a[32])
 {
   unsigned int j;
   unsigned int u;
 
   u = 0;
-  for(j = 0;j < 31;++j) { 
-    u += 121665 * a[j];
-    out[j] = u & 255;
-    u >>= 8; 
-  }
-
-  u += 121665 * a[31];
-  out[31] = u & 127;
+  for (j = 0;j < 31;++j) { u += 121665 * a[j]; out[j] = u & 255; u >>= 8; }
+  u += 121665 * a[31]; out[31] = u & 127;
   u = 19 * (u >> 7);
-
-  for(j = 0;j < 31;++j) {
-    u += out[j];
-    out[j] = u & 255;
-    u >>= 8;
-  }
-  u += out[j];
-  out[j] = u;
+  for (j = 0;j < 31;++j) { u += out[j]; out[j] = u & 255; u >>= 8; }
+  u += out[j]; out[j] = u;
 }
 
 static void square(unsigned int out[32],const unsigned int a[32])
@@ -270,10 +92,10 @@ static void square(unsigned int out[32],const unsigned int a[32])
   unsigned int j;
   unsigned int u;
 
-  for(i = 0;i < 32;++i) {
+  for (i = 0;i < 32;++i) {
     u = 0;
-    for(j = 0;j < i - j;++j) u += a[j] * a[i - j];
-    for(j = i + 1;j < i + 32 - j;++j) u += 38 * a[j] * a[i + 32 - j];
+    for (j = 0;j < i - j;++j) u += a[j] * a[i - j];
+    for (j = i + 1;j < i + 32 - j;++j) u += 38 * a[j] * a[i + 32 - j];
     u *= 2;
     if ((i & 1) == 0) {
       u += a[i / 2] * a[i / 2];
@@ -291,7 +113,7 @@ static void selecter(unsigned int p[64],unsigned int q[64],const unsigned int r[
   unsigned int bminus1;
 
   bminus1 = b - 1;
-  for(j = 0;j < 64;++j) {
+  for (j = 0;j < 64;++j) {
     t = bminus1 & (r[j] ^ s[j]);
     p[j] = s[j] ^ t;
     q[j] = r[j] ^ t;
@@ -320,50 +142,39 @@ static void mainloop(unsigned int work[64],const unsigned char e[32])
   unsigned int b;
   int pos;
 
-  // Join 
-  for(j = 0;j < 32;++j) xzm1[j] = work[j];
+  for (j = 0;j < 32;++j) xzm1[j] = work[j];
   xzm1[32] = 1;
-  for(j = 33;j < 64;++j) xzm1[j] = 0;
-  // ------
+  for (j = 33;j < 64;++j) xzm1[j] = 0;
 
   xzm[0] = 1;
-  for(j = 1;j < 64;++j) xzm[j] = 0;
-  
+  for (j = 1;j < 64;++j) xzm[j] = 0;
 
-  for(pos = 254;pos >= 0;--pos) {
+  for (pos = 254;pos >= 0;--pos) {
     b = e[pos / 8] >> (pos & 7);
     b &= 1;
-    selecter(xzmb, xzm1b, xzm, xzm1, b);
-    add(a0, xzmb, xzmb + 32);
-    sub(a0 + 32, xzmb, xzmb + 32);
-    add(a1, xzm1b, xzm1b + 32);
-    sub(a1 + 32, xzm1b, xzm1b + 32);
-    square(b0, a0);
-    square(b0 + 32, a0 + 32);
-
-    mult(b1, a1, a0 + 32);
-
-    mult(b1 + 32, a1 + 32, a0);
-
-    add(c1, b1, b1 + 32);
-    sub(c1 + 32, b1, b1 + 32);
+    selecter(xzmb,xzm1b,xzm,xzm1,b);
+    add(a0,xzmb,xzmb + 32);
+    sub(a0 + 32,xzmb,xzmb + 32);
+    add(a1,xzm1b,xzm1b + 32);
+    sub(a1 + 32,xzm1b,xzm1b + 32);
+    square(b0,a0);
+    square(b0 + 32,a0 + 32);
+    mult(b1,a1,a0 + 32);
+    mult(b1 + 32,a1 + 32,a0);
+    add(c1,b1,b1 + 32);
+    sub(c1 + 32,b1,b1 + 32);
     square(r,c1 + 32);
-    sub(s, b0, b0 + 32);
-    mult121665(t, s);
-    add(u, t, b0);
-
-    mult(xznb, b0, b0 + 32);
-
-    mult(xznb + 32, s, u);
-
-    square(xzn1b, c1);
-
-    mult(xzn1b + 32, r, work);
-
-    selecter(xzm, xzm1, xznb, xzn1b, b);
+    sub(s,b0,b0 + 32);
+    mult121665(t,s);
+    add(u,t,b0);
+    mult(xznb,b0,b0 + 32);
+    mult(xznb + 32,s,u);
+    square(xzn1b,c1);
+    mult(xzn1b + 32,r,work);
+    selecter(xzm,xzm1,xznb,xzn1b,b);
   }
 
-  for(j = 0;j < 64;++j) work[j] = xzm[j];
+  for (j = 0;j < 64;++j) work[j] = xzm[j];
 }
 
 static void recip(unsigned int out[32],const unsigned int z[32])
@@ -380,124 +191,75 @@ static void recip(unsigned int out[32],const unsigned int z[32])
   unsigned int t1[32];
   int i;
 
-  /* 2 */ square(z2, z);
-  /* 4 */ square(t1, z2);
-  /* 8 */ square(t0, t1);
-  /* 9 */ mult(z9, t0, z);
-  /* 11 */ mult(z11, z9, z2);
-  /* 22 */ square(t0, z11);
-  /* 2^5 - 2^0 = 31 */ mult(z2_5_0, t0, z9);
+  /* 2 */ square(z2,z);
+  /* 4 */ square(t1,z2);
+  /* 8 */ square(t0,t1);
+  /* 9 */ mult(z9,t0,z);
+  /* 11 */ mult(z11,z9,z2);
+  /* 22 */ square(t0,z11);
+  /* 2^5 - 2^0 = 31 */ mult(z2_5_0,t0,z9);
 
-  /* 2^6 - 2^1 */ square(t0, z2_5_0);
-  /* 2^7 - 2^2 */ square(t1, t0);
-  /* 2^8 - 2^3 */ square(t0, t1);
-  /* 2^9 - 2^4 */ square(t1, t0);
-  /* 2^10 - 2^5 */ square(t0, t1);
-  /* 2^10 - 2^0 */ mult(z2_10_0, t0,z2_5_0);
+  /* 2^6 - 2^1 */ square(t0,z2_5_0);
+  /* 2^7 - 2^2 */ square(t1,t0);
+  /* 2^8 - 2^3 */ square(t0,t1);
+  /* 2^9 - 2^4 */ square(t1,t0);
+  /* 2^10 - 2^5 */ square(t0,t1);
+  /* 2^10 - 2^0 */ mult(z2_10_0,t0,z2_5_0);
 
-  /* 2^11 - 2^1 */ square(t0, z2_10_0);
-  /* 2^12 - 2^2 */ square(t1, t0);
-  /* 2^20 - 2^10 */
-                  for(i = 2; i < 10; i += 2)
-                  {
-                    square(t0, t1);
-                    square(t1, t0);
-                  }
-  /* 2^20 - 2^0 */ mult(z2_20_0, t1, z2_10_0);
+  /* 2^11 - 2^1 */ square(t0,z2_10_0);
+  /* 2^12 - 2^2 */ square(t1,t0);
+  /* 2^20 - 2^10 */ for (i = 2;i < 10;i += 2) { square(t0,t1); square(t1,t0); }
+  /* 2^20 - 2^0 */ mult(z2_20_0,t1,z2_10_0);
 
-  /* 2^21 - 2^1 */ square(t0, z2_20_0);
-  /* 2^22 - 2^2 */ square(t1, t0);
-  /* 2^40 - 2^20 */
-                  for(i = 2; i < 20; i += 2)
-                  {
-                    square(t0, t1);
-                    square(t1, t0);
-                  }
-  /* 2^40 - 2^0 */ mult(t0, t1, z2_20_0);
+  /* 2^21 - 2^1 */ square(t0,z2_20_0);
+  /* 2^22 - 2^2 */ square(t1,t0);
+  /* 2^40 - 2^20 */ for (i = 2;i < 20;i += 2) { square(t0,t1); square(t1,t0); }
+  /* 2^40 - 2^0 */ mult(t0,t1,z2_20_0);
 
-  /* 2^41 - 2^1 */ square(t1, t0);
-  /* 2^42 - 2^2 */ square(t0, t1);
-  /* 2^50 - 2^10 */ 
-                  for(i = 2; i < 10; i += 2)
-                  { 
-                    square(t1, t0);
-                    square(t0, t1);
-                  }
-  /* 2^50 - 2^0 */ mult(z2_50_0, t0, z2_10_0);
+  /* 2^41 - 2^1 */ square(t1,t0);
+  /* 2^42 - 2^2 */ square(t0,t1);
+  /* 2^50 - 2^10 */ for (i = 2;i < 10;i += 2) { square(t1,t0); square(t0,t1); }
+  /* 2^50 - 2^0 */ mult(z2_50_0,t0,z2_10_0);
 
-  /* 2^51 - 2^1 */ square(t0, z2_50_0);
-  /* 2^52 - 2^2 */ square(t1, t0);
-  /* 2^100 - 2^50 */ 
-                  for(i = 2; i < 50; i += 2)
-                  { 
-                    square(t0, t1);
-                    square(t1, t0);
-                  }
-  /* 2^100 - 2^0 */ mult(z2_100_0, t1, z2_50_0);
+  /* 2^51 - 2^1 */ square(t0,z2_50_0);
+  /* 2^52 - 2^2 */ square(t1,t0);
+  /* 2^100 - 2^50 */ for (i = 2;i < 50;i += 2) { square(t0,t1); square(t1,t0); }
+  /* 2^100 - 2^0 */ mult(z2_100_0,t1,z2_50_0);
 
-  /* 2^101 - 2^1 */ square(t1, z2_100_0);
-  /* 2^102 - 2^2 */ square(t0, t1);
-  /* 2^200 - 2^100 */ 
-                  for(i = 2; i < 100; i += 2)
-                  { 
-                    square(t1, t0);
-                    square(t0, t1);
-                  }
-  /* 2^200 - 2^0 */ mult(t1, t0, z2_100_0);
+  /* 2^101 - 2^1 */ square(t1,z2_100_0);
+  /* 2^102 - 2^2 */ square(t0,t1);
+  /* 2^200 - 2^100 */ for (i = 2;i < 100;i += 2) { square(t1,t0); square(t0,t1); }
+  /* 2^200 - 2^0 */ mult(t1,t0,z2_100_0);
 
-  /* 2^201 - 2^1 */ square(t0, t1);
-  /* 2^202 - 2^2 */ square(t1, t0);
-  /* 2^250 - 2^50 */ 
-                  for(i = 2; i < 50; i += 2)
-                  { 
-                    square(t0, t1);
-                    square(t1, t0);
-                  }
-  /* 2^250 - 2^0 */ mult(t0, t1, z2_50_0);
+  /* 2^201 - 2^1 */ square(t0,t1);
+  /* 2^202 - 2^2 */ square(t1,t0);
+  /* 2^250 - 2^50 */ for (i = 2;i < 50;i += 2) { square(t0,t1); square(t1,t0); }
+  /* 2^250 - 2^0 */ mult(t0,t1,z2_50_0);
 
-  /* 2^251 - 2^1 */ square(t1, t0);
-  /* 2^252 - 2^2 */ square(t0, t1);
-  /* 2^253 - 2^3 */ square(t1, t0);
-  /* 2^254 - 2^4 */ square(t0, t1);
-  /* 2^255 - 2^5 */ square(t1, t0);
-  /* 2^255 - 21 */ mult(out, t1, z11);
-
+  /* 2^251 - 2^1 */ square(t1,t0);
+  /* 2^252 - 2^2 */ square(t0,t1);
+  /* 2^253 - 2^3 */ square(t1,t0);
+  /* 2^254 - 2^4 */ square(t0,t1);
+  /* 2^255 - 2^5 */ square(t1,t0);
+  /* 2^255 - 21 */ mult(out,t1,z11);
 }
 
 int crypto_scalarmult(unsigned char *q,
   const unsigned char *n,
-  const unsigned char *p 
-  )
+  const unsigned char *p)
 {
   unsigned int work[96];
   unsigned char e[32];
   unsigned int i;
-  for(i = 0; i < 32; ++i){
-    e[i] = n[i];
-  }
-
+  for (i = 0;i < 32;++i) e[i] = n[i];
   e[0] &= 248;
   e[31] &= 127;
   e[31] |= 64;
-
-  for(i = 0; i < 32; ++i){
-    work[i] = p[i];
-  }
-
-  mainloop(work, e);
-  // for(int i = 0; i < 64; i++)
-  // {
-  //   printf("%c", work[i]);
-  // }
-  // printf("\n");
-  recip(&work[32], &work[32]);
-
-
-  mult(&work[64], work, &work[32]);
-  freeze(&work[64]);
-
-  for(i = 0; i < 32; ++i){
-    q[i] = work[64 + i];
-  }
+  for (i = 0;i < 32;++i) work[i] = p[i];
+  mainloop(work,e);
+  recip(work + 32,work + 32);
+  mult(work + 64,work,work + 32);
+  freeze(work + 64);
+  for (i = 0;i < 32;++i) q[i] = work[64 + i];
   return 0;
 }
