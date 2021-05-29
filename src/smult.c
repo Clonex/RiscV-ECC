@@ -4,7 +4,7 @@ Matthew Dempsky
 Public domain.
 Derived from public domain code by D. J. Bernstein.
 */
-#define ENABLE_KARAT 1
+#define ENABLE_KARAT
 
 unsigned int KARAT_L = 32;
 
