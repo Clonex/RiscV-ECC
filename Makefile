@@ -29,7 +29,7 @@ LDLIBS += -L$(LIBCRYPTO_A) -laes_reference -lsha256_reference
 # define the dependencies, a generic rule for .elf target exists in
 # config.mk).
 
-TEST_SRC = src/test.c $(RNG_DIR)
+TEST_SRC = src/test.c src/smult.c $(RNG_DIR)
 TEST_OBJ = $(call objs,$(TEST_SRC))
 test.elf: $(TEST_OBJ)
 TARGETS += test.bin

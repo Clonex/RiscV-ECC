@@ -4,9 +4,8 @@ Matthew Dempsky
 Public domain.
 Derived from public domain code by D. J. Bernstein.
 */
-#include "base.h"
+#define ENABLE_KARAT 1
 
-#define ENABLE_KARAT
 unsigned int KARAT_L = 32;
 
 static void squeeze(unsigned int a[32])
@@ -138,6 +137,7 @@ static void karat(unsigned int *out, const unsigned int *x, const unsigned int *
 }
 #endif
 
+unsigned int tempMult[64] = {0};
 #ifndef ENABLE_KARAT
 static void mult(unsigned int out[32], const unsigned int a[32], const unsigned int b[32])
 {
@@ -164,7 +164,6 @@ static void mult(unsigned int out[32], const unsigned int a[32], const unsigned 
 
 
 #ifdef ENABLE_KARAT
-unsigned int tempMult[64] = {0};
 static void mult(unsigned int *out, const unsigned int a[32], const unsigned int b[32])
 {
   karat(tempMult, a, b, 32);
@@ -255,7 +254,7 @@ static void mainloop(unsigned int work[64],const unsigned char e[32])
   unsigned int s[32];
   unsigned int t[32];
   unsigned int u[32];
-  unsigned int i;
+  // unsigned int i;
   unsigned int j;
   unsigned int b;
   int pos;
