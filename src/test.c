@@ -2,6 +2,7 @@
 // #include <stdio.h>
 #include <hal.h>
 #include <sendfn.h>
+#include "base.h"
 #include "smult.c"
 #include "rng.h"
 
@@ -34,9 +35,6 @@ static unsigned char n2[nlen + CRYPTO_BYTES] = {0};
 static unsigned char p2[plen + CRYPTO_BYTES] = {0};
 static unsigned char q2[qlen + CRYPTO_BYTES] = {0};
 static unsigned char r2[rlen + CRYPTO_BYTES] = {0};
-
-
-int KARAT_L = 32;
 
 char checksum[CRYPTO_SCALARBYTES * 2 + 1];
 
