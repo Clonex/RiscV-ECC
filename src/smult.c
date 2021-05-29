@@ -4,11 +4,10 @@ Matthew Dempsky
 Public domain.
 Derived from public domain code by D. J. Bernstein.
 */
-
 #include "base.h"
 
 #define ENABLE_KARAT
-
+unsigned int KARAT_L = 32;
 
 static void squeeze(unsigned int a[32])
 {

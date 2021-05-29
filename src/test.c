@@ -27,14 +27,14 @@ const unsigned char base[32] = {9};
 static unsigned char m[mlen] = {0};
 static unsigned char n[nlen] = {0};
 static unsigned char p[plen] = {0};
-static unsigned char q[qlen] = {0};
-static unsigned char r[rlen] = {0};
+// static unsigned char q[qlen] = {0};
+// static unsigned char r[rlen] = {0};
 
-static unsigned char m2[mlen + CRYPTO_BYTES] = {0};
-static unsigned char n2[nlen + CRYPTO_BYTES] = {0};
-static unsigned char p2[plen + CRYPTO_BYTES] = {0};
-static unsigned char q2[qlen + CRYPTO_BYTES] = {0};
-static unsigned char r2[rlen + CRYPTO_BYTES] = {0};
+// static unsigned char m2[mlen + CRYPTO_BYTES] = {0};
+// static unsigned char n2[nlen + CRYPTO_BYTES] = {0};
+// static unsigned char p2[plen + CRYPTO_BYTES] = {0};
+// static unsigned char q2[qlen + CRYPTO_BYTES] = {0};
+// static unsigned char r2[rlen + CRYPTO_BYTES] = {0};
 
 char checksum[CRYPTO_SCALARBYTES * 2 + 1];
 
@@ -76,9 +76,9 @@ int main(void){
     {
       if(mode == MODE_HASH)
       {
-        send_start();
-        send_string("log", "Hashing..");
-        send_stop();
+        // send_start();
+        // send_string("log", "Hashing..");
+        // send_stop();
 
         randombytes(m, CRYPTO_SCALARBYTES);
         randombytes(n, CRYPTO_SCALARBYTES);
