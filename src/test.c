@@ -5,8 +5,6 @@
 #include "smult.c"
 #include "rng.h"
 
-// #define DO_CHECKSUM
-
 #define CRYPTO_BYTES 32
 #define CRYPTO_SCALARBYTES 32
 
@@ -28,8 +26,9 @@ static unsigned char m[mlen] = {0};
 static unsigned char n[nlen] = {0};
 static unsigned char p[plen] = {0};
 
+unsigned char seed[48] = {0};
 char checksum[CRYPTO_SCALARBYTES * 2 + 1] = {10};
-#ifdef DO_CHECKSUM
+
 const char *checksum_compute(void)
 {
   long long i;
@@ -41,12 +40,8 @@ const char *checksum_compute(void)
   checksum[2 * i] = 0;
   return 0;
 }
-#endif
-
-unsigned char seed[48] = {0};
 
 int main(void){
-    // randombytes_init(seed, NULL, 256);
     hal_setup(CLOCK_FAST);
     int mode = MODE_BLANK;
     while(1)
@@ -64,9 +59,7 @@ int main(void){
 
         crypto_scalarmult(p, m, base);
         int cycles = hal_get_time() - start;
-        #ifdef DO_CHECKSUM
         checksum_compute();
-        #endif
 
         send_start();
         send_string("checksum", checksum);
