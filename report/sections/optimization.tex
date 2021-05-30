@@ -1,15 +1,19 @@
 \section{Optimization}
 % ~10 pages
-% -- Skriv om hvor der ELLERS kunne optimeres??
 
 \subsection{Karatsuba}
 Multiplication is used intensely during the encryption[] steps, this was a focus of optimization. The reference implementation of the curve uses simple schoolbook multiplication.\\
 Where every single digit is multiplied with the corresponding digit in the other number, and a carry is carried on to the next iteration when the result is bigger than the radix. This carry will then be multiplied with the next set of digits.\\
-
+For example, if we wanted to multiply $23 \cdot 35$.
 \begin{equation*}
     \begin{split}
         & a = 29\\
-        & b = 35\\
+        & b = 35
+    \end{split}
+\end{equation*}
+Then it would find the product of every digit in \texttt{a} and \texttt{b}, with its correct decimal position. Then find the sum of alle the products.
+\begin{equation*}
+    \begin{split}
         \\
     %   &  (20 \cdot 30) + (20 \cdot 5) + (9 \cdot 30) + (9 \cdot 5) = \\
        &\;\;\;\;(30 \cdot 20)\\
@@ -29,12 +33,18 @@ $(a_0 + a_1 x)(b_0 + b_1 x) = a_0 b_0 + (a_0 b_1 + a_1 b_0 )x + a_1 b_1 x^2$\\
 This computation needs 4 products. The Karatsuba approach can do this multiplication with only 3 products.\\
 $(a_0 + a_1 x)(b_0 + b_1 x) = a_0 b_0 + 2^m ((a_0+a_1))(b_0 + b_1)-a_0 b_0 - a_1 b_1) + 2^{2m} a_1 b_1)$\\
 % \[A_0 \times B_0 + 2^{m}((A_0 + A_1) \times (B_0 + B_1) - A_0 \times B_0 - A_1 \times B_1) + 2^{2m} A_1 \times B_1\]
-This approach requires 5 products, with 2 of them being the same multiplications. For this reason 2 of them can be stored and them re-used without any calculations.
-
+This approach requires 5 products, with 2 of them being the same multiplications. For this reason 2 of them can be stored and them re-used without any calculations.\medskip
+\\
+An example would be as if the target was to multiply $2973$ with $3572$ \\
 \begin{equation*}
     \begin{split}
         & a = 2973\\
-        & b = 3572\\
+        & b = 3572
+    \end{split}
+\end{equation*}
+
+\begin{equation*}
+    \begin{split}
         & low = 29 \cdot 35 = 1015\\
         & high = 73 \cdot 72 = 5256\\
         & mm = (29 + 73) \cdot (35 + 72) = 10914\\
@@ -43,6 +53,8 @@ This approach requires 5 products, with 2 of them being the same multiplications
         & 10150000 + 5256 + 464300 = 10619556
     \end{split}
 \end{equation*}
-The Karatsuba algorithm uses more additions compared to the schoolbook approach which uses 4 multiplications and 3 additions, this uses 3 multiplications, 4 additions and 2 subtractions. So the algorithm saves multiplications at the cost of additions and subtractions. Thus is Karatsuba faster if multiplication is more expensive than additions and subtractions. The recursive implementation stops at a threshold and uses schoolbook multiplication instead.\\
-\medskip
+The Karatsuba algorithm uses more additions compared to the schoolbook approach which uses 4 multiplications and 3 additions, this uses 3 multiplications, 4 additions and 2 subtractions. So the algorithm saves multiplications at the cost of additions and subtractions. Thus is Karatsuba faster if multiplication is more expensive than additions and subtractions. The recursive implementation stops at a threshold and uses schoolbook multiplication instead.
 
+\subsection{Other optimizations}
+Only Karatsuba was implemented, and tested due to time constraint, however other areas could have been interesting to look into. The Toom–Cook multiplication algorithm is another approach for large integer multiplication, which could have been interesting to experiment with. As squaring is also a significant part of the process, a speedup of squaring could have been interesting as well. \\
+\medskip
