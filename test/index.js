@@ -23,7 +23,7 @@ port.on('open', async () => {
 });
 
 let karaData = [];
-let karaI = 0;
+let karaI = false;
 
 port.on('data', async (data) => {
     let message = dataParser(data);

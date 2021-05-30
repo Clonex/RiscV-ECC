@@ -6,7 +6,7 @@ Derived from public domain code by D. J. Bernstein.
 */
 #define ENABLE_KARAT
 
-unsigned int KARAT_L = 32;
+int KARAT_L = 32;
 
 static void squeeze(unsigned int a[32])
 {
@@ -94,8 +94,6 @@ static void freeze(unsigned int a[32])
 #define SHIFTED_L (length >> 1)
 static void karat(unsigned int *out, const unsigned int *x, const unsigned int *y, int length)
 {
-  // printf("Karat start length = %d\n", length);
-
   unsigned int LOW[length + 1];
   unsigned int HIGH[length + 1];
   unsigned int MED[length + 2];
@@ -137,7 +135,22 @@ static void karat(unsigned int *out, const unsigned int *x, const unsigned int *
 }
 #endif
 
+#ifdef ENABLE_KARAT
 unsigned int tempMult[64] = {0};
+static void mult(unsigned int *out, const unsigned int a[32], const unsigned int b[32])
+{
+  karat(tempMult, a, b, 32);
+  for (int i = 0; i < 32; i++)
+  {
+    out[i] = tempMult[i] + tempMult[i + 32] * 38;
+
+    tempMult[i] = 0;
+    tempMult[i + 32] = 0;
+  }
+  squeeze(out);
+}
+#endif
+
 #ifndef ENABLE_KARAT
 static void mult(unsigned int out[32], const unsigned int a[32], const unsigned int b[32])
 {
@@ -159,22 +172,6 @@ static void mult(unsigned int out[32], const unsigned int a[32], const unsigned 
   }
   
    squeeze(out);
-}
-#endif
-
-
-#ifdef ENABLE_KARAT
-static void mult(unsigned int *out, const unsigned int a[32], const unsigned int b[32])
-{
-  karat(tempMult, a, b, 32);
-  for (int i = 0; i < 32; i++)
-  {
-    out[i] = tempMult[i] + tempMult[i + 32] * 38;
-
-    tempMult[i] = 0;
-    tempMult[i + 32] = 0;
-  }
-  squeeze(out);
 }
 #endif
 
@@ -259,11 +256,9 @@ static void mainloop(unsigned int work[64],const unsigned char e[32])
   unsigned int b;
   int pos;
 
-  // Join 
   for(j = 0;j < 32;++j) xzm1[j] = work[j];
   xzm1[32] = 1;
   for(j = 33;j < 64;++j) xzm1[j] = 0;
-  // ------
 
   xzm[0] = 1;
   for(j = 1;j < 64;++j) xzm[j] = 0;
