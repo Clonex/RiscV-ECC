@@ -18,6 +18,7 @@ This approach is the approach used in the reference implemention, which can be r
 \\
 
 The Karatsuba algorithm 
+\label{karat-opti}
 \[A_0 \times B_0 + 2^{m}((A_0 + A_1) \times (B_0 + B_1) - A_0 \times B_0 - A_1 \times B_1) + 2^{2m} A_1 \times B_1\]
 This approach requires 5 products, with 2 of them being the same multiplications. For this reason 2 of them can be stored and them re-used without any calculations.
 \\EXAMPLE IMAGE\\
