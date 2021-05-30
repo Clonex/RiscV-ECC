@@ -1,26 +1,48 @@
 \section{Optimization}
-~10 pages
-
-
--- Skriv om hvor der ELLERS kunne optimeres??
-
+% ~10 pages
+% -- Skriv om hvor der ELLERS kunne optimeres??
 
 \subsection{Karatsuba}
-The Karatsuba algorithm is used to perform multiplication of large numbers with fewer operations, than the school-book multiplication approach.
-$n^{\log_{2}3} \approx n^{1.58}$
-As multiplication is a 
+Multiplication is used intensely during the encryption[] steps, this was a focus of optimization. The reference implementation of the curve uses simple schoolbook multiplication.\\
+Where every single digit is multiplied with the corresponding digit in the other number, and a carry is carried on to the next iteration when the result is bigger than the radix. This carry will then be multiplied with the next set of digits.\\
 
-Multiplication is used intensly during the encryption[] steps, this was a focus of optimization. The reference implementation of the curve uses simple schoolbook multiplication.
-Where every single digit is multiplied with the corresponding digit in the other number, and a carry is carried on to the next iteration when the result is bigger than the base. This carry will then be multiplied with the next set of digits.\\
-EXAMPLE IMAGE\\
+\begin{equation*}
+    \begin{split}
+        & a = 29\\
+        & b = 35\\
+        \\
+    %   &  (20 \cdot 30) + (20 \cdot 5) + (9 \cdot 30) + (9 \cdot 5) = \\
+       &\;\;\;\;(30 \cdot 20)\\
+       &\;\;\;\;(30 \cdot 9)\\
+       &\;\;\;\;(5 \cdot 20)\\
+       &\underline{\;+ \; (5 \cdot 9)\;\;\;}\\
+       &\; = 1015\\
+    \end{split}
+\end{equation*}
 The schoolbook approach requires $n^{2}$ single-digit products. 
-This approach is the approach used in the reference implemention, which can be replaced with a more optimal algorithm.
+This approach is the approach used in the reference implementation, which can be replaced with a more optimal algorithm.\medskip
 \\
-
-The Karatsuba algorithm 
-\label{karat-opti}
-\[A_0 \times B_0 + 2^{m}((A_0 + A_1) \times (B_0 + B_1) - A_0 \times B_0 - A_1 \times B_1) + 2^{2m} A_1 \times B_1\]
+\label{karat-opti}The Karatsuba algorithm is used to perform multiplication of large numbers with fewer operations, than the school-book multiplication approach. It can be done in $O(n^{\log_{2}3}) \approx O(n^{1.58})$.\medskip
+\\
+Using schoolbook multiplication can be represented as such, where $a_0 + a_1x$ and $b_0 + b_1x$ are each a polynomial.\\
+$(a_0 + a_1 x)(b_0 + b_1 x) = a_0 b_0 + (a_0 b_1 + a_1 b_0 )x + a_1 b_1 x^2$\\
+This computation needs 4 products. The Karatsuba approach can do this multiplication with only 3 products.\\
+$(a_0 + a_1 x)(b_0 + b_1 x) = a_0 b_0 + 2^m ((a_0+a_1))(b_0 + b_1)-a_0 b_0 - a_1 b_1) + 2^{2m} a_1 b_1)$\\
+% \[A_0 \times B_0 + 2^{m}((A_0 + A_1) \times (B_0 + B_1) - A_0 \times B_0 - A_1 \times B_1) + 2^{2m} A_1 \times B_1\]
 This approach requires 5 products, with 2 of them being the same multiplications. For this reason 2 of them can be stored and them re-used without any calculations.
-\\EXAMPLE IMAGE\\
-The Karatsuba algorithm uses more additions compared to the schoolbook approach which uses 4 multiplications and 3 additions, this uses 3 multiplications, 4 additions and 2 subtractions. So the algorithm saves multiplications at the cost of additions and subtractions. Thus is Karatsuba faster if multiplication is more expensive than additions and subtractions. 
+
+\begin{equation*}
+    \begin{split}
+        & a = 2973\\
+        & b = 3572\\
+        & low = 29 \cdot 35 = 1015\\
+        & high = 73 \cdot 72 = 5256\\
+        & mm = (29 + 73) \cdot (35 + 72) = 10914\\
+        & med = mm - low - high = 4643\\
+        \\
+        & 10150000 + 5256 + 464300 = 10619556
+    \end{split}
+\end{equation*}
+The Karatsuba algorithm uses more additions compared to the schoolbook approach which uses 4 multiplications and 3 additions, this uses 3 multiplications, 4 additions and 2 subtractions. So the algorithm saves multiplications at the cost of additions and subtractions. Thus is Karatsuba faster if multiplication is more expensive than additions and subtractions. The recursive implementation stops at a threshold and uses schoolbook multiplication instead.\\
+\medskip
 
