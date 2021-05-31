@@ -6,14 +6,7 @@
 %     - Different stages of implementations
 %     - Compare
 % -----
-
-
-
 An evaluation can me made using the data gotten using the test scripts described in the implementation section \ref{section-Implementation}. All measurements is measured by counting the cycles it takes to run the code.
-
-\subsection{Testing}
-Testing was done using the setup described in subsection \ref{sub-testing}. This enables testing of different seeds, Karatsuba operand lengths and multiple iterations of the algorithm.
-
 
 \subsection{Reference implementation}
 The reference implementation uses Montgomery ladder approach for point multiplication, schoolbook multiplication, and branch less fixed time approaches to the arithmetic in general. This makes it easier to measure the cycles as it they wont change depending on its input. The reference implementation takes $79.794$ megacycles to run.
@@ -39,5 +32,14 @@ Using this operand length results in a measurement of $79.118$ megacycles. To co
 \label{karatsubacomparison}
 \end{figure}
 
-\subsection{Other tests}
-%What other tests could have beeen usefull?
+
+\subsection{Testing}
+Testing was done using the setup described in subsection \ref{sub-testing}. This enables testing of different seeds, Karatsuba operand lengths and multiple iterations of the algorithm.
+\\
+The current setup only compares the reference implementation with Karatsuba on the emulated CPU. Other kind of tests should have been created as well, to cover more of the range of mistakes that could have happened.\\
+\subsubsection{Test with multiple different seeds}
+\label{missing-test-1}
+A script to automatically generate a bunch of input files, and output files should have been made. Thee files would contain the seed in the input, and $n$ checksums in the output files. Which the test-script then could load in and automatically verify that all the input matched with the output files. This would help verify that the reference and modified implementations matched over multiple different seeds.
+
+\subsubsection{Comparing to the local reference implementation}
+The same input and output files could have been made to compare it with the local reference implementation located in \texttt{src/ref/}. In this case the input files would contain \textit{p} and \textit{m} used in \textit{crypto\_scalarmult} and the output files would contain the checksum. The test script could then load in theese files just as described in subsection \ref{missing-test-1} This would help verify that the ported version matches the reference implementation.
