@@ -4,13 +4,14 @@
 % curve / scheme (1 page), 
 % background about riscv (2-3 page)\\
 % \\
-A essential part of computing is having a secure cryptographic algoritm. Theese algoritms has become a crucial part of messaging, and network systems.
+A essential part of computing is having a secure cryptographic algorithm. Theese algorithm's has become a crucial part of messaging, and network systems, hence the focus on making these algorithms faster.
 The goal of this project is to port Curve25519 to RISC-V, and optimize it for the VexRiscv platform.
 \\
-Curve25519 is a elliptic cure algoritm released by Daniel J. Bernstein in 2005. The algorithm was originally defined as a Diffie-Hellman function.
+Curve25519 is a elliptic cure algorithm released by Daniel J. Bernstein in 2005. The algorithm was originally defined as a Diffie-Hellman function.
 ECC uses smaller keys than RSA while providing the same level of security, with faster key generation.
-A ECC public key contains a pair of integer coordinates \textit{(x, y)} on the curve. A elliptic point can be compressed to a single X coordinate, which is used by curve 25519.
+A ECC public key contains a pair of integer coordinates \textit{(x, y)} on the curve. A elliptic point can be compressed to a single X coordinate, which is used by Curve25519.
 \\
-The Elliptic-curve Diffie-Hellman is a key agreement scheme, which allows two parties to establish a shared secret with 2 different public/private key sets. 
-Eliptic-curve Diffie-Hellman (ECDH) is very similar to a classical Diffie Hellman, the difference is that ECDH uses \textit{ECC point multiplication} where the classical approach uses \textit{modular exponentations}.
+The Elliptic-curve Diffie-Hellman is a key agreement scheme, is a classical use case which allows two parties to establish a shared secret with 2 different public/private key sets. 
+Eliptic-curve Diffie-Hellman (ECDH) is very similar to a classical Diffie Hellman, the difference is that ECDH uses \textit{ECC point multiplication} where the classical approach uses \textit{modular exponentiation}.\\
+Karatsuba is an multiplication algorithm which is faster than typical schoolbook multiplication. 
 \pagebreak

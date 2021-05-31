@@ -10,7 +10,7 @@
 | Structure of report done                | 11/03    | 18/03    | 1 week         | x      |
 | First reference implementation running  | 25/03    | 29/03    | 4 days         | x      |
 | Report: write introduction about scheme | 29/03    | 14/04    | 2 weeks        | x      |
-| Optimization                            | 14/04    | 05/05    | 3 weeks        | IN     |
+| Optimization                            | 14/04    | 05/05    | 3 weeks        | x      |
 | Report done                             | 05/05    | 26/05    | 3 weeks        | IN     |
 | Final deadline                          | June 1st | 01/06    |                |        |
 

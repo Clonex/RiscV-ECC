@@ -2,8 +2,8 @@
 % ~10 pages
 
 \subsection{Karatsuba}
-Multiplication is used intensely during the encryption[] steps, this was a focus of optimization. The reference implementation of the curve uses simple schoolbook multiplication.\\
-Where every single digit is multiplied with the corresponding digit in the other number, and a carry is carried on to the next iteration when the result is bigger than the radix. This carry will then be multiplied with the next set of digits.\\
+as multiplication is used intensely during the curve's algorithm steps, this is an interesting place to focus on optimizing. The reference implementation of the curve uses simple schoolbook multiplication.\\
+Here every single digit is multiplied with the corresponding digit in the other number, and a carry is carried on to the next iteration when the result is bigger than the radix. This carry will then be multiplied with the next set of digits.\\
 For example, if we wanted to multiply $23 \cdot 35$.
 \begin{equation*}
     \begin{split}
@@ -11,7 +11,7 @@ For example, if we wanted to multiply $23 \cdot 35$.
         & b = 35
     \end{split}
 \end{equation*}
-Then it would find the product of every digit in \texttt{a} and \texttt{b}, with its correct decimal position. Then find the sum of alle the products.
+Then it would find the product of every digit in \texttt{a} and \texttt{b}, with its correct decimal position. Then find the sum of all the products.
 \begin{equation*}
     \begin{split}
         \\
@@ -26,7 +26,7 @@ Then it would find the product of every digit in \texttt{a} and \texttt{b}, with
 The schoolbook approach requires $n^{2}$ single-digit products. 
 This approach is the approach used in the reference implementation, which can be replaced with a more optimal algorithm.\medskip
 \\
-\label{karat-opti}The Karatsuba algorithm is used to perform multiplication of large numbers with fewer operations, than the school-book multiplication approach. It can be done in $O(n^{\log_{2}3}) \approx O(n^{1.58})$.\medskip
+\label{karat-opti}The Karatsuba algorithm is used to perform multiplication of large numbers with fewer operations, than the school-book multiplication approach. This method can be performed in $O(n^{\log_{2}3}) \approx O(n^{1.58})$.
 \\
 Using schoolbook multiplication can be represented as such, where $a_0 + a_1x$ and $b_0 + b_1x$ are each a polynomial.\\
 $(a_0 + a_1 x)(b_0 + b_1 x) = a_0 b_0 + (a_0 b_1 + a_1 b_0 )x + a_1 b_1 x^2$\\
@@ -41,20 +41,27 @@ An example would be as if the target was to multiply $2973$ with $3572$ \\
         & a = 2973\\
         & b = 3572
     \end{split}
-\end{equation*}
+\end{equation*}\\
+Then the Karatsuba steps would be as following:\\
+\begin{enumerate}
+    \item Compute $a_0 \cdot y_0$ call the result $L$.\\$L = 29 \cdot 35 = 1015$
+    \item Compute $a_1 \cdot y_1$ call the result $H$.\\$H = 73 \cdot 72 = 5256$
+    \item Compute $(a_0 + x_1) \cdot (y_0 + y_1)$ call the result $MM$.\\$MM = (29 + 73) \cdot (35 + 72) = 10914$
+    \item Compute $MM - L - H$ call the result $M$.\\$MM - L - H = 4643$
+    \item Compute $L * M^2 + M * M + L$, where $M$ is the digit numbers.\\$10150000 + 5256 + 464300 = 10619556$
+\end{enumerate}
+% \begin{equation*}
+%     \begin{split}
+%         & low = 29 \cdot 35 = 1015\\
+%         & high = 73 \cdot 72 = 5256\\
+%         & mm = (29 + 73) \cdot (35 + 72) = 10914\\
+%         & med = mm - low - high = 4643\\
+%         \\
+%         & 10150000 + 5256 + 464300 = 10619556
+%     \end{split}
+% \end{equation*}
+The Karatsuba algorithm uses 3 multiplications, 4 additions and 2 subtractions compared to the schoolbook approach which uses 4 multiplications and 3 additions. So the algorithm saves multiplications at the cost of additions and subtractions. Thus is Karatsuba faster if multiplication is more expensive than additions and subtractions. The recursive implementation stops at a threshold and uses schoolbook multiplication instead.
 
-\begin{equation*}
-    \begin{split}
-        & low = 29 \cdot 35 = 1015\\
-        & high = 73 \cdot 72 = 5256\\
-        & mm = (29 + 73) \cdot (35 + 72) = 10914\\
-        & med = mm - low - high = 4643\\
-        \\
-        & 10150000 + 5256 + 464300 = 10619556
-    \end{split}
-\end{equation*}
-The Karatsuba algorithm uses more additions compared to the schoolbook approach which uses 4 multiplications and 3 additions, this uses 3 multiplications, 4 additions and 2 subtractions. So the algorithm saves multiplications at the cost of additions and subtractions. Thus is Karatsuba faster if multiplication is more expensive than additions and subtractions. The recursive implementation stops at a threshold and uses schoolbook multiplication instead.
-
-\subsection{Other optimizations}
-Only Karatsuba was implemented, and tested due to time constraint, however other areas could have been interesting to look into. The Toom–Cook multiplication algorithm is another approach for large integer multiplication, which could have been interesting to experiment with. As squaring is also a significant part of the process, a speedup of squaring could have been interesting as well. \\
+\subsection{Future optimizations}
+Karatsuba was the only algorithm that was implemented, and tested due to time constraints, however other areas could have been interesting to look into. The Toom–Cook multiplication algorithm is another approach for large integer multiplication, which could have been interesting to experiment with. As squaring is also a significant part of the process, a speedup of squaring could have been interesting as well. \\
 \medskip
