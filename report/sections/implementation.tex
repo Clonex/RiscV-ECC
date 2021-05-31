@@ -1,4 +1,5 @@
 \section{Implementation}
+\label{section-Implementation}
 %     crucial arithmetic
 %     How it works together
 %     Reference ideas (Maybe from litterature)
@@ -15,12 +16,12 @@ This section will describe how the reference implementation from Bernstein was p
 The reference implementation was straight forward to port, as the arithmetic itself could be used directly without any changes. This add confidence that the algorithm is still correct.\medskip
 \\
 The \texttt{checksum\_compute} function used the \texttt{random\(\)} function given in the C standard library to fill \texttt{p} and \texttt{n} with random values. In the main implementation \texttt{randombytes\(\)} is used to fill \texttt{p} and \texttt{n} with random values, as \texttt{randombytes\(\)} is supplied with the implementation from the rainbowgit implementation\cite{rainbowgit}, 
-As the C standard library is not available, an alternative to the \texttt{random\(\)} function is used. Part of the library rainbowgit\cite{rainbowgit} is used for the \texttt{randombytes\(\)} implementation, this implementation uses \texttt{AES} to give a pseudo-random output. As \textit{AES} isn't supplied either, the libcrypto library\cite{libcrypto} is used for its \textit{AES} implementation. It can be found in \textit{src/libcrypto}. It is maintained by the official RISC-V organization, and is actively being developed.
+As the C standard library is not available, an alternative to the \texttt{random\(\)} function is used. Part of the library rainbowgit\cite{rainbowgit} is used for the \texttt{randombytes\(\)} implementation, this implementation uses \texttt{AES} to give a pseudo-random output. As \textit{AES} isn't supplied either, the libcrypto library\cite{libcrypto} is used for its \textit{AES} implementation. It can be found in \textit{src/libcrypto}. It is maintained by the official RISC-V organization, and is actively being developed \cite{libcrypto}.
 
 \subsection{Karatsuba algorithm}
-To easily allow to enable and disable Karatsuba a C preprocessor definition \texttt{ENABLE\_KARAT} is used. The Karatsuba algorithm will only be included when the definition is present, otherwise it will use the reference implementation.\medskip
+To easily allow to enable and disable Karatsuba a C preprocessor definition \texttt{ENABLE\_KARAT} is used. The Karatsuba algorithm will only be included when the definition is present, otherwise it will use the unmodified reference implementation.\medskip
 \\
-The implementation of the algorithm which is described more in theory in subsection \ref{karat-opti} can be explained with a step by step example. In this example the values $2973$ and $3572$ is multiplied. \\
+The implementation of the algorithm which is described more in theory in subsection \ref{karat-opti}, and will follow a step by step, similar to the one given in that section. In this example the values $2973$ and $3572$ is multiplied. \\
 \includegraphics{report/images/karat-split.png}\\
 \textbf{Step 1 and 2}, is to compute $a * c$ which is stored in $LOW$ and $b * d$ which is stored in $HIGH$. The recursive step in the code will continue to recursively call itself until the operand length is smaller than the defined \texttt{KARAT\_L}, and the base case is reached and schoolbook multiplication will be used instead.
 \lstinputlisting[language=c, firstline=115, lastline=122]{../src/smult.c}
@@ -36,18 +37,18 @@ The implementation of the algorithm which is described more in theory in subsect
 
 \subsection{Testing}
 \label{sub-testing}
-I wanted to be able to test the code with different values, without having to recompile and restart the emulation every time. The \textit{HAL} library implements a series of serial-functions. Which allows the code to communicate with the host.
+I wanted to be able to test the code with different values, without having to recompile and restart the emulation between every tests. This could be achieved using the serial-functions, supplied by the PQVexRiscV\cite{PQVexRiscV} template, which allows the code to communicate with the host.
 \subsubsection{Device}
-The embedded device is waiting for the host to send a command, which it acts on. It has 5 different modes that the host can use.
+The embedded device is waiting for the host to send a command, which it acts on. It has 5 different modes that the host put it in.
 \lstinputlisting[language=c, firstline=19, lastline=23]{../src/test.c}
 \medskip
 \textbf{MODE\_BLANK} is the default mode. When the device is in \textit{MODE\_BLANK} it waits for a new mode from the host.
 \lstinputlisting[language=c, firstline=88, lastline=91]{../src/test.c}
 \medskip
-\textbf{MODE\_HASH} initializes the \textit{m} and \textit{n} memory with random values, and times the amount of cycles it takes to run \textit{crypto\_scalarmult\_base}. Then sends the \textit{checksum} and \textit{cycles} to the host.
+\textbf{MODE\_HASH} initializes the \textit{m} and \textit{n} memory with random values, and measures the amount of cycles it takes to run \textit{crypto\_scalarmult\_base}. Then sends the \textit{checksum} and \textit{cycles} back to the host.
 \lstinputlisting[language=c, firstline=51, lastline=67]{../src/test.c}
 \medskip
-\textbf{MODE\_SEED} takes 48 integers, which is put into the seed memory space, and then the seed is set with \textit{randombytes\_init}.
+\textbf{MODE\_SEED} waits for 48 integers from the host, which is then put into the seed memory space, and the seed is set with \textit{randombytes\_init}.
 \lstinputlisting[language=c, firstline=75, lastline=80]{../src/test.c}
 \medskip
 \textbf{MODE\_PING} is used as part of the initialization of the connection with the test-script on the host. When the host connects to the serial port it sends a \textit{MODE\_PING} command and waits for a reply to ensure the device is listening.
@@ -64,18 +65,20 @@ A wrapper function is written to convert the function \textit{port.write(msg, ca
 When the connection is opened, the \textit{MODE\_PING} command is sent to the device.
 \lstinputlisting[language=javascript, firstline=20, lastline=22]{../test/index.js}
 \medskip
-As the data from the embedded device is sent in chunks the script needs to be able to detect when a message has been fully received. As a message always ends with \texttt{\}} and then \textit{,} the script will look for thoose two characters to detect when a message has been fully received.
+As the data from the embedded device is sent in chunks the script needs to be able to detect when a message has been fully received. As a message always ends with \textbf{\}} and then \textbf{,} the script will look for thoose two characters to detect when a message has been fully received.
 \lstinputlisting[language=javascript, firstline=1, lastline=29]{../test/helpers.js}
-The \textit{dataParser} function copies every part of a string into a temporary string, and checks the condition described above. If the message has been received it will return a \textit{JSON} object, otherwise it will return \textit{false}.\medskip
+The \textit{dataParser} function copies every part of a string into a temporary string, and checks the condition described above. When the message has message has been received it returns a \textit{JSON} object, otherwise it will return \textit{false}.\medskip
 \\
-The function \texttt{dataParser} is called when data is received, and only acted upon if if returns a object.  
+The function \texttt{dataParser} is called when data is received, and only acted upon when the full message has been recieved, and it returns a object.  
 \lstinputlisting[language=javascript, firstline=28, lastline=31]{../test/index.js}
 \medskip
 The exsistance of keys on the message object, is used to check what kind of message it is.\\
 \medskip
-A \textbf{ping} message is received in response to the \textbf{MODE\_PING} sent when the connection is opened. This automatically sets the seed and starts a hash.\\
+A \textbf{ping} message is received in response to the \textbf{MODE\_PING} sent when the connection is opened. This automatically sets the seed and starts a hash.
+\lstinputlisting[language=javascript, firstline=58, lastline=66]{../test/index.js}
 \medskip
 The \textbf{checksum} message is received when a hash iteration is successful, which just prints out the message and replies with the \textbf{MODE\_HASH} mode.
 \label{karatTesting}
-If the variable \textit{karaI} is set to a number, then it tries to iterates over all "breaking" points for what length to use the schoolbook multiplication instead of the Karatsuba algorithm. It does this by waiting for \textbf{ping} and \textbf{checksum} messages, and trying every value up until 64, and saving the cycles result for every value.
+If the variable \textit{karaI} is set to a number, then it will collect all cycle-counts up to the operand length of 64. This changes at what operand length the Karatsuba should use schoolbook mulplication instead. It does this by waiting for \textbf{ping} and \textbf{checksum} messages, and trying every value up until 64, and saving the cycles result for every value.
 \lstinputlisting[language=javascript, firstline=34, lastline=55]{../test/index.js}
+\pagebreak
