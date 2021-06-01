@@ -419,13 +419,7 @@ int crypto_scalarmult(unsigned char *q,
   }
 
   mainloop(work, e);
-  // for(int i = 0; i < 64; i++)
-  // {
-  //   printf("%c", work[i]);
-  // }
-  // printf("\n");
   recip(&work[32], &work[32]);
-
 
   mult(&work[64], work, &work[32]);
   freeze(&work[64]);
