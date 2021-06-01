@@ -10,6 +10,7 @@
 \usepackage{float}
 \usepackage{hyperref}
 \usepackage{biblatex}
+\usepackage{fancyhdr}
 \addbibresource{biblography.bib}
 
 \definecolor{codegreen}{rgb}{0,0.6,0}
@@ -52,6 +53,13 @@
   sensitive=true
 }
 \lstset{style=mystyle}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\today}
+\lhead{Michael Saabye Salling}
+\fancyhead[C]{BADM500}
+\cfoot{\thepage\ of \pageref{LastPage}}
  
 \renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}} % for dots in table of contents for sections
 
@@ -133,7 +141,6 @@
 	
 	\end{titlepage}
 	\clearpage
-
     \pagenumbering{gobble} %disable page numbering
     \tableofcontents
     \clearpage
@@ -149,6 +156,6 @@
 	\input{sections/evaluation.tex}
 	\input{sections/conlusion.tex}
     \printbibliography
-
+    \label{LastPage}
     \clearpage     
 \end{document}

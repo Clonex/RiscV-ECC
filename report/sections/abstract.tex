@@ -3,3 +3,4 @@ I denne rapport vil jeg beskrive hvordan Karatsuba er blevet brugt til at optime
 \\
 Karatsuba er en hurtig multiplikations algoritme som kan bruges til store integer værdier.\\En reference implementation af Curve25519 er blevet ported til RISC-V og bliver simuleret på PQVexRiscV CPU'en.\\Der er kodet nogle test scripts til host maskinen og den simulerede CPU som bruges til at måle antal cyklusser det tager at køre krypteringen.  
 Udfra disse resultater kan der laves en evaluering. Karatsuba implementationen er $0.676$ megacycles hurtigere end reference implementationen. Selvom en optimering på $0.676$ megacycles er minimal, er det stadig hurtigere end den originale implementation, samt lægger et godt grundlag til at fortsætte med nogle andre optimeringer.
+\pagebreak
