@@ -1,21 +1,29 @@
-# Information
+# Karatsuba and Curve25519 on RISC-V
+Curve25519 has been ported to RISC-V. The Karatsuba multiplication algortihm is used to optimize the speed of the proccess. It is built on [PQVexRiscV](https://github.com/mupq/pqriscv-vexriscv)
+
+## Tests
+Open the device, with the test program loaded.
+```bash
+sbt "runMain mupq.PQVexRiscvSim --ram 256,128 --init <path/to/repo>/test.bin"
+```
+The test scripts is located in the `./test/` directory.
+```bash
+cd test
+npm rum start <devpts-port>
+```
+
+## Report
+To compile the report
+```bash
+cd report
+make
+```
+
+## Information
 
 
 
-# Schedule
-
-|                                         | Date     | Deadline | Estimated time | Status |
-|-----------------------------------------|----------|----------|----------------|--------|
-| Rough scedule and litterature           | 04/03    | 10/03    |                | x      |
-| Structure of report done                | 11/03    | 18/03    | 1 week         | x      |
-| First reference implementation running  | 25/03    | 29/03    | 4 days         | x      |
-| Report: write introduction about scheme | 29/03    | 14/04    | 2 weeks        | x      |
-| Optimization                            | 14/04    | 05/05    | 3 weeks        | x      |
-| Report done                             | 05/05    | 26/05    | 3 weeks        | IN     |
-| Final deadline                          | June 1st | 01/06    |                |        |
-
-
-# Litterature
+## Litterature
 
  - 2006, Curve25519: new Diffie-Hellman speed records, https://cr.yp.to/ecdh/curve25519-20060209.pdf
  - 2014, High-speed Curve25519 on 8-bit, 16-bit, and 32-bit microcontrollers, https://link.springer.com/content/pdf/10.1007/s10623-015-0087-1.pdf
@@ -23,7 +31,7 @@
  - Elliptic Curves Number Theory and Cryptography, http://people.cs.nctu.edu.tw/~rjchen/ECC2012S/Elliptic%20Curves%20Number%20Theory%20And%20Cryptography%202n.pdf
 
 
- # Usefull/inspiration links
+ ## Usefull/inspiration links
 
  - Original implementation by Bernstein, https://cr.yp.to/ecdh.html
  - Useful Crypto-related Resources, https://github.com/claucece/useful-crypto-resources#elliptic-curve
@@ -33,6 +41,6 @@
  - https://eprint.iacr.org/2020/836.pdf
 
 
- # Credits
+ ## Credits
  
  - Thanks to [Mupq](https://github.com/mupq), for supplying the template. 
