@@ -1,5 +1,5 @@
 # Karatsuba and Curve25519 on RISC-V
-Curve25519 has been ported to RISC-V. The Karatsuba multiplication algortihm is used to optimize the speed of the proccess. It is built on [PQVexRiscV](https://github.com/mupq/pqriscv-vexriscv)
+Curve25519 has been ported to RISC-V. The Karatsuba multiplication algorithm is used to optimize the speed of the proccess. It is built on [PQVexRiscV](https://github.com/mupq/pqriscv-vexriscv)
 
 ## Tests
 Open the device, with the test program loaded.
@@ -18,10 +18,6 @@ To compile the report
 cd report
 make
 ```
-
-## Information
-
-
 
 ## Litterature
 
