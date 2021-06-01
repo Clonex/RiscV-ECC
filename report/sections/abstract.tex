@@ -1,6 +1,6 @@
 \section{Abstract}
 I denne rapport vil jeg beskrive hvordan Karatsuba er blevet brugt til at optimere udregningerne brugt til Curve25519 som er blevet portet over til RISC-V ISA'en. RISC-V er en open source \texttt{open standard instruction set architecture} også kaldet ISA. Det er altså en mere åben tilgang til CPU design.
 \\
-Karatsuba er en hurtig multiplikations algoritme som kan bruges til store integer værdier.\\En reference implementation af Curve25519 er blevet ported til RISC-V og bliver simuleret på PQVexRiscV CPU'en.\\Der er kodet nogle test scripts til host maskinen og den simulerede CPU som bruges til at måle antal cyklusser det tager at køre krypteringen.  
-Udfra disse resultater kan der laves en evaluering. Karatsuba implementationen er $0.676$ megacycles hurtigere end reference implementationen. Selvom en optimering på $0.676$ megacycles er minimal, er det stadig hurtigere end den originale implementation, samt lægger et godt grundlag til at fortsætte med nogle andre optimeringer.
+Karatsuba er en hurtig multiplikations algoritme som kan bruges til store integer værdier.\\En reference implementation af Curve25519 er blevet ported til RISC-V og bliver simuleret på PQVexRiscV CPU'en.\\Der er kodet nogle test scripts til host maskinen og den simulerede CPU som bruges til at måle antal cyklusser det tager at køre algorithmen.  
+Udfra disse resultater kan der laves en evaluering. Karatsuba implementationen er $0.676$ megacycles hurtigere end reference implementationen. Selvom en optimering på $0.676$ megacycles er minimal, er det stadig hurtigere end den originale implementation, samt giver et godt grundlag til at fortsætte med nogle andre optimeringer.
 \pagebreak

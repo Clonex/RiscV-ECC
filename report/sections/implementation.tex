@@ -15,13 +15,13 @@ This section will describe how the reference implementation from Bernstein was p
 \subsection{Reference implementation}
 The reference implementation was straight forward to port, as the arithmetic itself could be used directly without any changes. This add confidence that the algorithm is still correct.\medskip
 \\
-The \texttt{checksum\_compute} function used the \texttt{random\(\)} function given in the C standard library to fill \texttt{p} and \texttt{n} with random values. In the main implementation \texttt{randombytes\(\)} is used to fill \texttt{p} and \texttt{n} with random values, as \texttt{randombytes\(\)} is supplied with the implementation from the rainbowgit implementation\cite{rainbowgit}, 
+The \texttt{checksum\_compute} function used the \texttt{random\(\)} function given in the C standard library to fill \texttt{p} and \texttt{n} with random values. In the main implementation \texttt{randombytes\(\)} is used to fill \texttt{p} and \texttt{n} with random values, as \texttt{randombytes\(\)} is supplied with the implementation from the rainbowgit implementation\cite{rainbowgit}. 
 As the C standard library is not available, an alternative to the \texttt{random\(\)} function is used. Part of the library rainbowgit\cite{rainbowgit} is used for the \texttt{randombytes\(\)} implementation, this implementation uses \texttt{AES} to give a pseudo-random output. As \textit{AES} isn't supplied either, the libcrypto library\cite{libcrypto} is used for its \textit{AES} implementation. It can be found in \textit{src/libcrypto}. It is maintained by the official RISC-V organization, and is actively being developed \cite{libcrypto}.
 
 \subsection{Karatsuba algorithm}
 To easily allow to enable and disable Karatsuba a C preprocessor definition \texttt{ENABLE\_KARAT} is used. The Karatsuba algorithm will only be included when the definition is present, otherwise it will use the unmodified reference implementation.\medskip
 \\
-The implementation of the algorithm which is described more in theory in subsection \ref{karat-opti}, and will follow a step by step, similar to the one given in that section. In this example the values $2973$ and $3572$ is multiplied. \\
+The implementation of the algorithm which is described more in theory in subsection \ref{karat-opti}, will follow the steps similar to the ones described in that section. In this example the values $2973$ and $3572$ is multiplied. \\
 \includegraphics{report/images/karat-split.png}\\
 \textbf{Step 1 and 2}, is to compute $a * c$ which is stored in $LOW$ and $b * d$ which is stored in $HIGH$. The recursive step in the code will continue to recursively call itself until the operand length is smaller than the defined \texttt{KARAT\_L}, and the base case is reached and schoolbook multiplication will be used instead.
 \lstinputlisting[language=c, firstline=115, lastline=122]{../src/smult.c}

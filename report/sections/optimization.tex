@@ -2,7 +2,7 @@
 % ~10 pages
 
 \subsection{Karatsuba}
-as multiplication is used intensely during the curve's algorithm steps, this is an interesting place to focus on optimizing. The reference implementation of the curve uses simple schoolbook multiplication.\\
+As multiplication is used intensely during the curve's algorithm steps, this is an interesting place to focus on optimizing. The reference implementation of the curve uses simple schoolbook multiplication.\\
 \\
 In this method every single digit is multiplied with the corresponding digit in the other number, and a carry is carried on to the next iteration when the result is bigger than the radix. This carry will then be multiplied with the next set of digits.\\
 For example, if we wanted to multiply $23 \cdot 35$.
