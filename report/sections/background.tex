@@ -35,11 +35,11 @@ The standard is based on reduced instruction set computer (RISC) principles, whi
     \item \textbf{Efficient, deep pipe-lining}\\One method to achieve hardware parallelism it to use pipe-lining. A pipeline keeps \textit{n} instructions active at the same time, and loads the next when its finished.
 \end{itemize}
 \\
-Instruction set architecture (ISA) defines the the instructions which the architecture must support. A ISA also specifies instructions for handling data and memory operations, and how data is encoded in the registers.
+Instruction set architecture (ISA) defines the the instructions which the architecture must support. A ISA also specifies instructions for handling data and memory operations, and how data is encoded in the registers.\\
 \\
 The RISC-V ISA has modular design with different ISA bases which defines instructions for integers and weak memory ordering, and a number of extensions developed in a collective efforts with researchers and companies.
 A modular approach allows the implementors to disable extension which is not needed, and save money on space and power used \cite{extendrisc}. \\
-Extensions are actively being developed, with some being in a \texttt{frozen} state. Which is defined as not expected to change during the ratification process \cite{riscmanual}.
+Extensions are actively being developed, with some being in a \texttt{frozen} state. Which is defined as not expected to change during the ratification process \cite{riscmanual}.\\
 \\
 A company might not find the extensions they need for their product. In that situation a custom ISA extension can be used, to add their special instructions. 
 This doesn't break the compliance with the main specification, which means that software made for the main specification will still work on the extended ISA.
@@ -48,7 +48,7 @@ This doesn't break the compliance with the main specification, which means that 
 % https://riscv.org/about/faq/
 % https://www.design-reuse.com/articles/46237/extending-risc-v-isa-with-a-custom-instruction-set-extension.html
 
-\subsection{Large integer multiplication} 
-Different multiplication apporaches has existed since the ancient Egyptians \cite{ancientmult}. Efficient algorithms have been created depending on the size of the numbers. 
+\subsection{Multiplication} 
+Different multiplication approaches has existed since the ancient Egyptians \cite{ancientmult}. Lattice multiplication is another method of multiplication, which uses a lattice to multiply two numbers, This method has been taught sine medieval times and is still being taught today. In more recent years efficient algorithms which can be used on computers is more of a focus. Efficient algorithms have been created depending on the size of the numbers, one such algorithm is the Karatsuba algorithm,
 
-\pagebreak
+% \pagebreak

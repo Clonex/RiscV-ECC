@@ -34,7 +34,7 @@ The implementation of the algorithm which is described more in theory in subsect
 \medskip
 \textbf{Step 5} we simply add $LOW$, $MED$ and $HIGH$, where the numbers have been shifted correctly.
 \lstinputlisting[language=c, firstline=132, lastline=134]{../src/smult.c}
-
+\pagebreak
 \subsection{Testing}
 \label{sub-testing}
 I wanted to be able to test the code with different values, without having to recompile and restart the emulation between every tests. This could be achieved using the serial-functions, supplied by the PQVexRiscV\cite{PQVexRiscV} template, which allows the code to communicate with the host.
@@ -63,9 +63,9 @@ A wrapper function is written to convert the function \textit{port.write(msg, ca
 \lstinputlisting[language=javascript, firstline=15, lastline=18]{../test/index.js}
 \medskip
 When the connection is opened, the \textit{MODE\_PING} command is sent to the device.
-\lstinputlisting[language=javascript, firstline=20, lastline=22]{../test/index.js}
-\medskip
+\lstinputlisting[language=javascript, firstline=20, lastline=22]{../test/index.js}\\
 As the data from the embedded device is sent in chunks the script needs to be able to detect when a message has been fully received. As a message always ends with \textbf{\}} and then \textbf{,} the script will look for thoose two characters to detect when a message has been fully received.
+
 \lstinputlisting[language=javascript, firstline=1, lastline=29]{../test/helpers.js}
 The \textit{dataParser} function copies every part of a string into a temporary string, and checks the condition described above. When the message has message has been received it returns a \textit{JSON} object, otherwise it will return \textit{false}.\medskip
 \\
@@ -79,6 +79,5 @@ A \textbf{ping} message is received in response to the \textbf{MODE\_PING} sent 
 \medskip
 The \textbf{checksum} message is received when a hash iteration is successful, which just prints out the message and replies with the \textbf{MODE\_HASH} mode.
 \label{karatTesting}
-If the variable \textit{karaI} is set to a number, then it will collect all cycle-counts up to the operand length of 64. This changes at what operand length the Karatsuba should use schoolbook mulplication instead. It does this by waiting for \textbf{ping} and \textbf{checksum} messages, and trying every value up until 64, and saving the cycles result for every value.
+\\If the variable \textit{karaI} is set to a number, then it will collect all cycle-counts up to the operand length of 64. This changes at what operand length the Karatsuba should use schoolbook mulplication instead. It does this by waiting for \textbf{ping} and \textbf{checksum} messages, and trying every value up until 64, and saving the cycles result for every value.
 \lstinputlisting[language=javascript, firstline=34, lastline=55]{../test/index.js}
-\pagebreak

@@ -42,7 +42,8 @@ The current setup only compares the reference implementation with Karatsuba on t
 A script to automatically generate a bunch of input files, and output files should have been made. Thee files would contain the seed in the input, and $n$ checksums in the output files. Which the test-script then could load in and automatically verify that all the input matched with the output files. This would help verify that the reference and modified implementations matched over multiple different seeds.
 
 \subsubsection{Comparing to the local reference implementation}
-The same input and output files could have been made to compare it with the local reference implementation located in \texttt{src/ref/}. In this case the input files would contain \textit{p} and \textit{m} used in \textit{crypto\_scalarmult} and the output files would contain the checksum. The test script could then load in theese files just as described in subsection \ref{missing-test-1} This would help verify that the ported version matches the reference implementation.
+The same input and output files could have been made to compare it with the local reference implementation located in \texttt{src/ref/}. In this case the input files would contain \textit{p} and \textit{m} used in \textit{crypto\_scalarmult} and the output files would contain the checksum.\\ The test script could then load in theese files just as described in subsection \ref{missing-test-1} This would help verify that the ported version matches the reference implementation.
 
 \subsubsection{CLI flags}
 Different CLI flags could have been made for the test-script. This would have allowed to switch between different tests easily, and without having to modify the code itself.
+\pagebreak

@@ -3,7 +3,8 @@
 
 \subsection{Karatsuba}
 as multiplication is used intensely during the curve's algorithm steps, this is an interesting place to focus on optimizing. The reference implementation of the curve uses simple schoolbook multiplication.\\
-Here every single digit is multiplied with the corresponding digit in the other number, and a carry is carried on to the next iteration when the result is bigger than the radix. This carry will then be multiplied with the next set of digits.\\
+\\
+In this method every single digit is multiplied with the corresponding digit in the other number, and a carry is carried on to the next iteration when the result is bigger than the radix. This carry will then be multiplied with the next set of digits.\\
 For example, if we wanted to multiply $23 \cdot 35$.
 \begin{equation*}
     \begin{split}
@@ -41,8 +42,8 @@ An example would be as if the target was to multiply $2973$ with $3572$ \\
         & a = 2973\\
         & b = 3572
     \end{split}
-\end{equation*}\\
-Then the Karatsuba steps would be as following:\\
+\end{equation*}
+Then the Karatsuba steps would be as following:
 \begin{enumerate}
     \item Compute $a_0 \cdot y_0$ call the result $L$.\\$L = 29 \cdot 35 = 1015$
     \item Compute $a_1 \cdot y_1$ call the result $H$.\\$H = 73 \cdot 72 = 5256$
@@ -64,4 +65,3 @@ The Karatsuba algorithm uses 3 multiplications, 4 additions and 2 subtractions c
 
 \subsection{Future optimizations}
 Karatsuba was the only algorithm that was implemented, and tested due to time constraints, however other areas could have been interesting to look into. The Toom–Cook multiplication algorithm is another approach for large integer multiplication, which could have been interesting to experiment with. As squaring is also a significant part of the process, a speedup of squaring could have been interesting as well. \\
-\medskip
